@@ -1,4 +1,4 @@
-package com.moonabyss;
+package com.moonabyss.rn;
 
 import javax.swing.*;
 import java.awt.*;

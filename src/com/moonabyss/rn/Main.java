@@ -1,19 +1,16 @@
-package com.moonabyss;
+package com.moonabyss.rn;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 
 public class Main {
     final static Color RN_GREEN = new Color(37, 136, 69);
 
     public static void main(String[] args) {
         MyApp app = new MyApp();
-        app.setVisible(true);
-        BufferedImage bi;
-        BufferedImage advCrest = app.signCross;
+
+        //BufferedImage bi;
+        //BufferedImage advCrest = app.signCross;
 
         //for (int i = 0; i < 10; i++) {
         while (true) {
@@ -30,17 +27,15 @@ public class Main {
                         }
                     }
                 }*/
-                bi = new Robot().createScreenCapture(new Rectangle(1258, 331, 32, 32));
-                app.image.setImage(bi);
-                app.setTitle(String.valueOf(imagesAreEqual(bi, advCrest)));
+                //bi = new Robot().createScreenCapture(new Rectangle(1258, 331, 32, 32));
+                //app.image.setImage(bi);
+                //app.setTitle(String.valueOf(imagesAreEqual(bi, advCrest)));
                 //ImageIO.write(bi,"png", new File(i+".png"));
                 //app.getContentPane().setBackground(color);
                 //System.out.println(color);
                 //app.setTitle(checkAdv());
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (AWTException e) {
                 e.printStackTrace();
             }
 

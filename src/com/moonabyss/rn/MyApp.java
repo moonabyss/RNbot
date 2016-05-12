@@ -65,6 +65,7 @@ public class MyApp {
             }*/
             BufferedImage bi = robot.createScreenCapture(new Rectangle(aPoint[i].x-16, aPoint[i].y-16, 32, 32));
 
+            //TODO make as function
             for (int x = 1; x < bi.getWidth() && !eq; x++) {
                 for (int y = 1; y < bi.getHeight() && !eq; y++) {
                     if (bi.getRGB(x, y) == RN_GREEN) {

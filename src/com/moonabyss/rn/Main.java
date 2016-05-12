@@ -4,10 +4,10 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class Main {
-    final static Color RN_GREEN = new Color(37, 136, 69);
 
     public static void main(String[] args) {
-        MyApp app = new MyApp();
+        Runnable r = ()->{MyApp app = new MyApp(); app.doJob();};
+        new Thread(r).start();
 
         //BufferedImage bi;
         //BufferedImage advCrest = app.signCross;
@@ -15,8 +15,8 @@ public class Main {
         //for (int i = 0; i < 10; i++) {
         while (true) {
             try {
-                int x = MouseInfo.getPointerInfo().getLocation().x;
-                int y = MouseInfo.getPointerInfo().getLocation().y;
+                //int x = MouseInfo.getPointerInfo().getLocation().x;
+                //int y = MouseInfo.getPointerInfo().getLocation().y;
                 //app.setTitle(x+" "+y);
                 /*for (int i = 1790; i < 1820; i++) {
                     for (int j = 487; j < 500; j++) {
@@ -42,27 +42,6 @@ public class Main {
         }
     }
 
-    public static String checkAdv() {
-        Color color;
-        StringBuilder sb =new StringBuilder();
-        Point[] aPoint = {new Point(1260, 725), new Point(1610, 639), new Point(1800, 496)};
-        for (int i = 0; i < 3; i++) {
-            try {
-                color = new Robot().getPixelColor(aPoint[i].x, aPoint[i].y);
-                if (color.getRGB() == RN_GREEN.getRGB()) {
-                    sb.append(i+1).append(' ');
-                } else {
-                    sb.append('-').append(' ');
-                }
-            } catch (AWTException e) {
-                e.printStackTrace();
-            }
-        }
-        if (sb.length() > 0) {
-            sb.deleteCharAt(sb.length()-1);
-        }
-        return sb.toString();
-    }
 
     public static boolean imagesAreEqual(BufferedImage image1, BufferedImage image2) {
         if (image1.getWidth() != image2.getWidth() || image1.getHeight() != image2.getHeight()) {

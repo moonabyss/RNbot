@@ -13,6 +13,7 @@ import java.io.IOException;
  */
 public class MySwingForm extends JFrame implements MyDisplay {
 
+    private static final String NEW_LINE = "\r\n";
     private Color bgColor;
     private MyImagePanel image = new MyImagePanel();
     private BufferedImage signCross = null;
@@ -40,11 +41,10 @@ public class MySwingForm extends JFrame implements MyDisplay {
         setVisible(true);
     }
 
-    @Override
     public void showMessages(FixedQueue<String> messages) {
         textArea.setText("");
         for (String str : messages) {
-            textArea.append(str);
+            textArea.append(str+NEW_LINE);
         }
     }
 

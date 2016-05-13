@@ -42,18 +42,4 @@ public class Main {
         }
     }
 
-
-    public static boolean imagesAreEqual(BufferedImage image1, BufferedImage image2) {
-        if (image1.getWidth() != image2.getWidth() || image1.getHeight() != image2.getHeight()) {
-            return false;
-        }
-        for (int x = 1; x < image2.getWidth(); x++) {
-            for (int y = 1; y < image2.getHeight(); y++) {
-                if (image1.getRGB(x, y) != image2.getRGB(x, y)) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
 }

@@ -6,6 +6,7 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -15,7 +16,7 @@ public class MySwingForm extends JFrame implements MyDisplay {
 
     private static final String NEW_LINE = "\r\n";
     private Color bgColor;
-    private MyImagePanel image = new MyImagePanel();
+    public MyImagePanel image = new MyImagePanel();
     private BufferedImage signCross = null;
     private JTextArea textArea;
 
@@ -24,7 +25,7 @@ public class MySwingForm extends JFrame implements MyDisplay {
         setBounds(800, 100, 400, 200);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setAlwaysOnTop(true);
-        add(image);
+        //add(image);
 
         try {
             signCross = ImageIO.read(getClass().getResource("/img/advCrest.png"));
@@ -46,6 +47,17 @@ public class MySwingForm extends JFrame implements MyDisplay {
         for (String str : messages) {
             textArea.append(str+NEW_LINE);
         }
+
+        /** grab image
+        try {
+            image.setImage(new Robot().createScreenCapture(new Rectangle(1826, 80, 72, 32)));
+            ImageIO.write(new Robot().createScreenCapture(new Rectangle(1826, 80, 72, 32)),"png", new File("stationAssa.png"));
+        } catch (AWTException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        */
     }
 
 }

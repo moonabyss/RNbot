@@ -16,7 +16,7 @@ import java.io.InterruptedIOException;
  */
 public class MyApp {
 
-    boolean party = true;
+    boolean assa = true;
     private final static Color RN_GREEN = new Color(37, 136, 69);
     private final static Color RN_BLACK = Color.BLACK;
     private BufferedImage firstPlayer = null;
@@ -41,7 +41,7 @@ public class MyApp {
     }
 
     public void doJob() {
-        if (!party) {
+        if (!assa) {
             messages.add("Соло режим");
         }
         try {
@@ -78,7 +78,7 @@ if (true) {
                 if (atStation) {
                     getBonus();
                     Thread.sleep(5000);
-                    if (party) {
+                    if (assa) {
                         assaMove(aPointAssaIn);
                         Thread.sleep(5000);
                         getBonusInAssa("Bonus");
@@ -90,14 +90,15 @@ if (true) {
 
                     viewVideo();
                     Thread.sleep(5000);
-                    if (party) {
+                    if (assa) {
                         assaMove(aPointAssaIn);
                         Thread.sleep(5000);
                         getBonusInAssa("Video");
                         assaMove(aPointAssaOut);
                         Thread.sleep(5000);
+                    } else {
+                        antiSleep();
                     }
-                    antiSleep();
                 }
 }
             } catch (InterruptedException e) {
@@ -314,11 +315,9 @@ if (true) {
     }
 
     private void antiSleep() throws InterruptedException {
-        robot.mouseMove(500, 500);
+        robot.mouseMove(500, 600);
         Thread.sleep(1000);
         robot.mouseMove(600, 500);
-        Thread.sleep(1000);
-        robot.mouseMove(500, 500);
     }
 
 }

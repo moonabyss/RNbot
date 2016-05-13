@@ -97,6 +97,7 @@ if (true) {
                         assaMove(aPointAssaOut);
                         Thread.sleep(5000);
                     }
+                    antiSleep();
                 }
 }
             } catch (InterruptedException e) {
@@ -310,6 +311,14 @@ if (true) {
             Thread.sleep(10000);
             throw new FlashCrashException();
         }
+    }
+
+    private void antiSleep() throws InterruptedException {
+        robot.mouseMove(500, 500);
+        Thread.sleep(1000);
+        robot.mouseMove(600, 500);
+        Thread.sleep(1000);
+        robot.mouseMove(500, 500);
     }
 
 }

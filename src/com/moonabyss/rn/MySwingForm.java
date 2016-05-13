@@ -21,7 +21,7 @@ public class MySwingForm extends JFrame implements MyDisplay {
 
     public MySwingForm() {
         super("RN bot");
-        setBounds(800, 100, 400, 200);
+        setBounds(355, 10, 400, 200);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setAlwaysOnTop(true);
         //add(image);
@@ -42,10 +42,10 @@ public class MySwingForm extends JFrame implements MyDisplay {
             //setTitle(str);
         }
 
-        /** grab image*/
+        /** grab image
         try {
             image.setImage(new Robot().createScreenCapture(new Rectangle(1258, 320, 32, 32)));
-            ImageIO.write(new Robot().createScreenCapture(new Rectangle(1165, 356, 32, 32)),"png", new File("advCrest.png"));
+            ImageIO.write(new Robot().createScreenCapture(new Rectangle(1165, 356, 32, 32)),"bmp", new File("advCrest.bmp"));
         } catch (AWTException e) {
             e.printStackTrace();
         } catch (IOException e) {

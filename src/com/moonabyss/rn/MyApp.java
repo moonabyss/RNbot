@@ -1,6 +1,7 @@
 package com.moonabyss.rn;
 
 import com.moonabyss.FixedQueue;
+import com.moonabyss.FlashCrashException;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -15,8 +16,12 @@ import java.io.InterruptedIOException;
  */
 public class MyApp {
 
+    boolean party = true;
     private final static Color RN_GREEN = new Color(37, 136, 69);
+    private final static Color RN_BLACK = Color.BLACK;
+    private BufferedImage firstPlayer = null;
     private static  final Point[] aPointBonus = {new Point(1050, 766), new Point(1403, 683), new Point(1582, 539)};
+    private static  final Point[] aPointRedBonus = {new Point(1100, 760), new Point(1450, 675), new Point(1655, 535)};
     private static  final Point[] aPointAdv = {new Point(1260, 765), new Point(1610, 679), new Point(1800, 536)};
     private static  final Point[] aPointAssaIn = {new Point(1894, 622), new Point(1707, 400), new Point(1726, 516)};
     private static  final Point[] aPointAssaOut = {new Point(1880, 35), new Point(1893, 374)};
@@ -36,6 +41,9 @@ public class MyApp {
     }
 
     public void doJob() {
+        if (!party) {
+            messages.add("Соло режим");
+        }
         try {
             robot = new Robot();
         } catch (AWTException e) {
@@ -44,15 +52,15 @@ public class MyApp {
         while (true) {
             try {
                 //координаты
-                int x = MouseInfo.getPointerInfo().getLocation().x;
+                /*int x = MouseInfo.getPointerInfo().getLocation().x;
                 int y = MouseInfo.getPointerInfo().getLocation().y;
-                //messages.add("Mouse X:" + x + ", Y:" + y);
+                messages.add("Mouse X:" + x + ", Y:" + y);*/
 /*
                 if (imagesAreEqual(robot.createScreenCapture(new Rectangle(1165, 356, 32, 32)), advCrest)) {messages.add("совпадают");} else {messages.add("не совпадают");}
                 display.showMessages(messages);
                 Thread.sleep(1000);
 */
-
+                flashCrash();
                 //info loop
                 boolean atStation = imagesAreEqual(robot.createScreenCapture(new Rectangle(823, 1018, 36, 24)), stationButton)
                         || imagesAreEqual(robot.createScreenCapture(new Rectangle(1826, 19, 72, 32)), stationAssaButton);
@@ -62,27 +70,39 @@ public class MyApp {
                 } else {
                     messages.add("Станция закрыта");
                 }
-                Thread.sleep(1000);
                 display.showMessages(messages);
+                Thread.sleep(1000);
+
 if (true) {
                 //Main loop
                 if (atStation) {
                     getBonus();
                     Thread.sleep(5000);
-                    assaMove(aPointAssaIn);
-                    Thread.sleep(5000);
-                    getBonusInAssa();
-                    assaMove(aPointAssaOut);
-                    Thread.sleep(5000);
+                    if (party) {
+                        assaMove(aPointAssaIn);
+                        Thread.sleep(5000);
+                        getBonusInAssa("Bonus");
+                        assaMove(aPointAssaOut);
+                        Thread.sleep(5000);
+                    }
+                    messages.add("Видео: " + checkAdv() + "\tБонус: " + checkBonus());
+                    display.showMessages(messages);
 
                     viewVideo();
-
-
-                    //Thread.sleep(5000);
+                    Thread.sleep(5000);
+                    if (party) {
+                        assaMove(aPointAssaIn);
+                        Thread.sleep(5000);
+                        getBonusInAssa("Video");
+                        assaMove(aPointAssaOut);
+                        Thread.sleep(5000);
+                    }
                 }
 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
+            } catch (FlashCrashException e) {
+                continue;
             }
         }
     }
@@ -121,7 +141,7 @@ if (true) {
         while (i < 3) {
             bi = robot.createScreenCapture(new Rectangle(aPointBonus[i].x-REC_WIDTH, aPointBonus[i].y-REC_WIDTH, REC_WIDTH*2, REC_WIDTH*2));
 
-            if (findColorPoint(bi, colorRgb[i])) {
+            if (findColorPoint(bi, colorRgb[i]) && !(robot.getPixelColor(aPointRedBonus[i].x, aPointRedBonus[i].y).getRed() >= 100 && robot.getPixelColor(aPointRedBonus[i].x, aPointRedBonus[i].y).getRed() <= 170)) {
                 sb.append(i+1).append(' ');
             } else {
                 sb.append('-').append(' ');
@@ -163,16 +183,16 @@ if (true) {
 
     private void loadImages() {
         try {
-            stationButton = ImageIO.read(getClass().getResource("/img/station.png"));
-            stationAssaButton = ImageIO.read(getClass().getResource("/img/stationAssa.png"));
-            crest = ImageIO.read(getClass().getResource("/img/crest.png"));
-            advCrest = ImageIO.read(getClass().getResource("/img/advCrest.png"));
+            stationButton = ImageIO.read(getClass().getResource("/img/station.bmp"));
+            stationAssaButton = ImageIO.read(getClass().getResource("/img/stationAssa.bmp"));
+            crest = ImageIO.read(getClass().getResource("/img/crest.bmp"));
+            advCrest = ImageIO.read(getClass().getResource("/img/advCrest.bmp"));
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void moveMouseAndClick(Point point) throws InterruptedException {
+    private void moveMouseAndClick(Point point) throws InterruptedException, FlashCrashException {
         int x = MouseInfo.getPointerInfo().getLocation().x;
         int y = MouseInfo.getPointerInfo().getLocation().y;
 
@@ -184,9 +204,10 @@ if (true) {
         Thread.sleep(300);
         robot.mousePress(InputEvent.BUTTON1_MASK);
         robot.mouseRelease(InputEvent.BUTTON1_MASK);
+        flashCrash();
     }
 
-    private void assaMove(Point[] mouseCoord) throws InterruptedException {
+    private void assaMove(Point[] mouseCoord) throws InterruptedException, FlashCrashException {
         Point[] aPoint = mouseCoord;
         for (int i = 0; i < aPoint.length; i++) {
             moveMouseAndClick(aPoint[i]);
@@ -194,7 +215,7 @@ if (true) {
         }
     }
 
-    private void getBonus() throws InterruptedException{
+    private void getBonus() throws InterruptedException, FlashCrashException{
         String bonuses = "";
         bonuses = checkBonus();
 
@@ -207,61 +228,87 @@ if (true) {
         }
     }
 
-    private void getBonusInAssa() throws InterruptedException {
+    private void getBonusInAssa(String mode) throws InterruptedException, FlashCrashException {
         Point nextPlayer = new Point(1865, 1030);
         BufferedImage currentPlayer = null;
+        int counter = 0;
         Thread.sleep(3000);
-        BufferedImage firstPlayer = robot.createScreenCapture(new Rectangle(45, 105, 225, 55));
+        if (firstPlayer == null) {
+            firstPlayer = robot.createScreenCapture(new Rectangle(45, 105, 225, 55));
+        }
+        Thread.sleep(3000);
         do {
-            messages.add("Видео: " + checkAdv() + "\tБонус: " + checkBonus());
-            display.showMessages(messages);
-            getBonus();
+            counter++;
+            if (mode.equalsIgnoreCase("Bonus")) {
+                messages.add("Бонус: " + checkBonus());
+                display.showMessages(messages);
+                getBonus();
+            } else {
+                messages.add("Видео: " + checkAdv());
+                display.showMessages(messages);
+                viewVideo();
+            }
+
             moveMouseAndClick(nextPlayer);
-            Thread.sleep(5000);
+            Thread.sleep(3000);
             currentPlayer = robot.createScreenCapture(new Rectangle(45, 105, 225, 55));
+            if (counter >= 25) {
+                break;
+            }
         } while (!imagesAreEqual(firstPlayer, currentPlayer));
     }
 
-    private void viewVideo() throws InterruptedException{
+    private void viewVideo() throws InterruptedException, FlashCrashException{
         String videos = "";
         videos = checkAdv();
         final Point advClose = new Point(960, 680);
         final Point advBonus = new Point(975, 760);
+        final Point advCrestik = new Point(1180, 375);
 
         for (int i = 0; i < 3; i++) {
             if (videos.contains(String.valueOf(i + 1))) {
                 moveMouseAndClick(aPointAdv[i]);
                 do {
                     Thread.sleep(3000);
-                    messages.add("Идет видео");
-                    display.showMessages(messages);
                 } while (imagesAreEqual(robot.createScreenCapture(new Rectangle(1258, 320, 32, 32)), crest));
-                messages.add("end");
-                display.showMessages(messages);
+                Thread.sleep(3000);
                 if (imagesAreEqual(robot.createScreenCapture(new Rectangle(1165, 356, 32, 32)), advCrest)) {
-                    messages.add("окончание видео");
                     moveMouseAndClick(advClose);
                 } else {
                     moveMouseAndClick(advBonus);
                     do {
                         Thread.sleep(3000);
-                        messages.add("Идет бонусное видео");
-                        display.showMessages(messages);
                     } while (imagesAreEqual(robot.createScreenCapture(new Rectangle(1258, 320, 32, 32)), crest));
+                    moveMouseAndClick(advCrestik);
                 }
-                messages.add("end bonus video");
-                display.showMessages(messages);
-                moveMouseAndClick(advClose);
                 Thread.sleep(3000);
             }
         }
     }
 
-    private void checkModalWindow() throws InterruptedException{
+    private void checkModalWindow() throws InterruptedException, FlashCrashException{
         Point closeModalWindow = new Point(1155, 385);
         if (imagesAreEqual(robot.createScreenCapture(new Rectangle(1142, 371, 32, 32)), crest)) {
             moveMouseAndClick(closeModalWindow);
             Thread.sleep(3000);
+        }
+    }
+
+    private void flashCrash() throws InterruptedException, FlashCrashException{
+        int black = RN_BLACK.getRGB();
+        Point restartFlash = new Point(310, 18);
+        Point openStation = new Point(840, 1040);
+        if (robot.getPixelColor(400, 250).getRGB() == black
+                && robot.getPixelColor(1500, 250).getRGB() == black
+                && robot.getPixelColor(400, 850).getRGB() == black
+                && robot.getPixelColor(1500, 850).getRGB() == black) {
+            messages.add("Рестарт");
+            display.showMessages(messages);
+            moveMouseAndClick(restartFlash);
+            Thread.sleep(40000);
+            moveMouseAndClick(openStation);
+            Thread.sleep(10000);
+            throw new FlashCrashException();
         }
     }
 

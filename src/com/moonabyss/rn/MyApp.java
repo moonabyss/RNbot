@@ -1,6 +1,7 @@
 package com.moonabyss.rn;
 
 import com.moonabyss.FixedQueue;
+import com.moonabyss.FixedStringQueueWithDate;
 import com.moonabyss.FlashCrashException;
 
 import javax.imageio.ImageIO;
@@ -26,7 +27,7 @@ public class MyApp {
     private static  final Point[] aPointAssaIn = {new Point(1894, 622), new Point(1707, 400), new Point(1726, 516)};
     private static  final Point[] aPointAssaOut = {new Point(1880, 35), new Point(1893, 374)};
 
-    FixedQueue<String> messages = new FixedQueue<>(10);
+    FixedStringQueueWithDate<String> messages = new FixedStringQueueWithDate<>(10);
     private MyDisplay display = new MySwingForm();
     private BufferedImage stationButton;
     private BufferedImage stationAssaButton;

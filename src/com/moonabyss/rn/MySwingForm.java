@@ -1,6 +1,7 @@
 package com.moonabyss.rn;
 
 import com.moonabyss.FixedQueue;
+import com.moonabyss.FixedStringQueueWithDate;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -38,13 +39,10 @@ public class MySwingForm extends JFrame implements MyDisplay {
         setVisible(true);
     }
 
-    public void showMessages(FixedQueue<String> messages) {
-        Calendar cal = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-        String curTime = sdf.format(cal.getTime());
+    public void showMessages(FixedStringQueueWithDate<String> messages) {
         textArea.setText("");
         for (String str : messages) {
-            textArea.append(curTime+SPACE+str+NEW_LINE);
+            textArea.append(str+NEW_LINE);
             //setTitle(str);
         }
 

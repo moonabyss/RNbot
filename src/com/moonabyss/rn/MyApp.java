@@ -66,7 +66,7 @@ public class MyApp {
                         || imagesAreEqual(robot.createScreenCapture(new Rectangle(1826, 19, 72, 32)), stationAssaButton);
                 //messages.add("Mouse X:" + x + ", Y:" + y + " " + robot.getPixelColor(1582, 494));
                 if (atStation) {
-                    messages.add("Видео: " + checkAdv() + "\tБонус: " + checkBonus());
+                    messages.add("Бонус: " + checkBonus() + "\tВидео: " + checkAdv());
                 } else {
                     messages.add("Станция закрыта");
                 }
@@ -85,7 +85,7 @@ if (true) {
                         assaMove(aPointAssaOut);
                         Thread.sleep(5000);
                     }
-                    messages.add("Видео: " + checkAdv() + "\tБонус: " + checkBonus());
+                    messages.add("Бонус: " + checkBonus() + "\tВидео: " + checkAdv());
                     display.showMessages(messages);
 
                     viewVideo();
@@ -297,7 +297,8 @@ if (true) {
     }
 
     private void flashCrash() throws InterruptedException, FlashCrashException{
-        int black = RN_BLACK.getRGB();
+        int black = RN_GREEN.getRGB();
+        //int black = RN_BLACK.getRGB();
         Point restartFlash = new Point(310, 18);
         Point openStation = new Point(840, 1040);
         if (robot.getPixelColor(400, 250).getRGB() == black
@@ -317,9 +318,12 @@ if (true) {
     private void antiSleep() throws InterruptedException {
         int x = MouseInfo.getPointerInfo().getLocation().x;
         int y = MouseInfo.getPointerInfo().getLocation().y;
-        robot.mouseMove(600, 600);
-        Thread.sleep(1000);
-        robot.mouseMove(x, y);
+        Thread.sleep(5000);
+        if (x == MouseInfo.getPointerInfo().getLocation().x && y == MouseInfo.getPointerInfo().getLocation().y) {
+            robot.mouseMove(x + 50, y);
+            Thread.sleep(500);
+            robot.mouseMove(x, y);
+        }
     }
 
 }

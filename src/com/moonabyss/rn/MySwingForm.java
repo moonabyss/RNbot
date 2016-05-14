@@ -8,6 +8,8 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 /**
  * Created by uncle on 12.05.2016.
@@ -15,9 +17,12 @@ import java.io.IOException;
 public class MySwingForm extends JFrame implements MyDisplay {
 
     private static final String NEW_LINE = "\r\n";
+    private static final String SPACE = " ";
     private Color bgColor;
     public MyImagePanel image = new MyImagePanel();
     private JTextArea textArea;
+    private Calendar cal = Calendar.getInstance();
+    SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
 
     public MySwingForm() {
         super("RN bot");
@@ -36,9 +41,10 @@ public class MySwingForm extends JFrame implements MyDisplay {
     }
 
     public void showMessages(FixedQueue<String> messages) {
+        String curTime = sdf.format(cal.getTime());
         textArea.setText("");
         for (String str : messages) {
-            textArea.append(str+NEW_LINE);
+            textArea.append(curTime+SPACE+str+NEW_LINE);
             //setTitle(str);
         }
 

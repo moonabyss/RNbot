@@ -21,8 +21,6 @@ public class MySwingForm extends JFrame implements MyDisplay {
     private Color bgColor;
     public MyImagePanel image = new MyImagePanel();
     private JTextArea textArea;
-    private Calendar cal = Calendar.getInstance();
-    SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
 
     public MySwingForm() {
         super("RN bot");
@@ -41,6 +39,8 @@ public class MySwingForm extends JFrame implements MyDisplay {
     }
 
     public void showMessages(FixedQueue<String> messages) {
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
         String curTime = sdf.format(cal.getTime());
         textArea.setText("");
         for (String str : messages) {

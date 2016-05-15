@@ -16,10 +16,6 @@ public class FixedStringQueueWithDate<T extends String> extends ArrayList<T> {
         maxSize = size;
     }
 
-    public void setDateFormat(SimpleDateFormat sdf) {
-        this.sdf = sdf;
-    }
-
     @Override
     public boolean add(T t) {
         Calendar calendar = Calendar.getInstance();

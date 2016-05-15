@@ -18,9 +18,9 @@ import java.io.InterruptedIOException;
 public class MyApp {
 
     boolean solo = false;
+    int assaSize = 5;
     private final static Color RN_GREEN = new Color(37, 136, 69);
     private final static Color RN_BLACK = Color.BLACK;
-    private BufferedImage firstPlayer = null;
     private static  final Point[] aPointBonus = {new Point(1050, 766), new Point(1403, 683), new Point(1582, 539)};
     private static  final Point[] aPointRedBonus = {new Point(1100, 760), new Point(1450, 675), new Point(1655, 535)};
     private static  final Point[] aPointAdv = {new Point(1260, 765), new Point(1610, 679), new Point(1800, 536)};
@@ -44,6 +44,8 @@ public class MyApp {
     public void doJob() {
         if (solo) {
             messages.add("Соло режим");
+        } else {
+            messages.add("Размер ассы " + assaSize);
         }
         try {
             robot = new Robot();
@@ -63,10 +65,9 @@ public class MyApp {
 */
                 flashCrash();
                 //info loop
-                boolean atStation = imagesAreEqual(robot.createScreenCapture(new Rectangle(823, 1018, 36, 24)), stationButton)
-                        || imagesAreEqual(robot.createScreenCapture(new Rectangle(1826, 19, 72, 32)), stationAssaButton);
+
                 //messages.add("Mouse X:" + x + ", Y:" + y + " " + robot.getPixelColor(1582, 494));
-                if (atStation) {
+                if (atStation()) {
                     messages.add("Бонус: " + checkBonus() + "\tВидео: " + checkAdv());
                 } else {
                     messages.add("Станция закрыта");
@@ -76,27 +77,23 @@ public class MyApp {
 
 if (true) {
                 //Main loop
-                if (atStation) {
+                if (atStation()) {
+                    showMyBonuses();
                     getBonus();
-                    Thread.sleep(5000);
+                    Thread.sleep(2000);
                     if (!solo) {
                         assaMove(aPointAssaIn);
-                        Thread.sleep(5000);
                         getBonusInAssa("Bonus");
-                        assaMove(aPointAssaOut);
-                        Thread.sleep(5000);
                     }
-                    messages.add("Бонус: " + checkBonus() + "\tВидео: " + checkAdv());
-                    display.showMessages(messages);
-
+                }
+                if (atStation()) {
+                    showMyBonuses();
+                    getBonus();
                     viewVideo();
-                    Thread.sleep(5000);
+                    Thread.sleep(2000);
                     if (!solo) {
                         assaMove(aPointAssaIn);
-                        Thread.sleep(5000);
                         getBonusInAssa("Video");
-                        assaMove(aPointAssaOut);
-                        Thread.sleep(5000);
                     } else {
                         antiSleep();
                     }
@@ -216,6 +213,7 @@ if (true) {
             moveMouseAndClick(aPoint[i]);
             Thread.sleep(2000);
         }
+        robot.mouseMove(960, 500);
     }
 
     private void getBonus() throws InterruptedException, FlashCrashException{
@@ -223,9 +221,12 @@ if (true) {
         bonuses = checkBonus();
 
         for (int i = 0; i < 3; i++) {
+            if (!(atStation() || inAssa())) {
+                return;
+            }
             if (bonuses.contains(String.valueOf(i + 1))) {
                 moveMouseAndClick(aPointBonus[i]);
-                Thread.sleep(3000);
+                Thread.sleep(1500);
                 checkModalWindow();
             }
         }
@@ -236,29 +237,30 @@ if (true) {
         BufferedImage currentPlayer = null;
         int counter = 0;
         Thread.sleep(3000);
-        if (firstPlayer == null) {
-            firstPlayer = robot.createScreenCapture(new Rectangle(45, 105, 225, 55));
-        }
-        Thread.sleep(3000);
+        BufferedImage firstPlayer = robot.createScreenCapture(new Rectangle(45, 105, 225, 55));
+        Thread.sleep(1000);
         do {
+            if (!inAssa()) {
+                return;
+            }
             counter++;
-            if (mode.equalsIgnoreCase("Bonus")) {
-                messages.add("Бонус: " + checkBonus());
-                display.showMessages(messages);
-                getBonus();
-            } else {
-                messages.add("Видео: " + checkAdv());
-                display.showMessages(messages);
+            messages.add("Бонус: " + checkBonus() + "\tВидео: " + checkAdv());
+            display.showMessages(messages);
+            getBonus();
+            if (mode.equalsIgnoreCase("Video")) {
                 viewVideo();
+                getBonus();
             }
 
             moveMouseAndClick(nextPlayer);
             Thread.sleep(3000);
             currentPlayer = robot.createScreenCapture(new Rectangle(45, 105, 225, 55));
-            if (counter >= 25) {
+            if (counter > assaSize) {
                 break;
             }
         } while (!imagesAreEqual(firstPlayer, currentPlayer));
+        assaMove(aPointAssaOut);
+        Thread.sleep(3000);
     }
 
     private void viewVideo() throws InterruptedException, FlashCrashException{
@@ -269,6 +271,9 @@ if (true) {
         final Point advCrestik = new Point(1180, 375);
 
         for (int i = 0; i < 3; i++) {
+            if (!(atStation() || inAssa())) {
+                return;
+            }
             if (videos.contains(String.valueOf(i + 1))) {
                 moveMouseAndClick(aPointAdv[i]);
                 do {
@@ -325,6 +330,19 @@ if (true) {
             Thread.sleep(500);
             robot.mouseMove(x, y);
         }
+    }
+
+    private boolean atStation () {
+        return imagesAreEqual(robot.createScreenCapture(new Rectangle(823, 1018, 36, 24)), stationButton);
+    }
+
+    private boolean inAssa () {
+        return imagesAreEqual(robot.createScreenCapture(new Rectangle(1826, 19, 72, 32)), stationAssaButton);
+    }
+
+    private void showMyBonuses() {
+        messages.add("Бонус: " + checkBonus() + "\tВидео: " + checkAdv());
+        display.showMessages(messages);
     }
 
 }

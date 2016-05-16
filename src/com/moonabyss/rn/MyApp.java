@@ -240,6 +240,7 @@ if (true) {
         BufferedImage firstPlayer = robot.createScreenCapture(new Rectangle(45, 105, 225, 55));
         Thread.sleep(1000);
         do {
+            checkErrorBuilding();
             if (!inAssa()) {
                 return;
             }
@@ -347,6 +348,13 @@ if (true) {
     private void showMyBonuses() {
         messages.add("Бонус: " + checkBonus() + "\tВидео: " + checkAdv());
         display.showMessages(messages);
+    }
+
+    private void checkErrorBuilding() throws FlashCrashException, InterruptedException {
+        checkModalWindow();
+        Thread.sleep(2000);
+        assaMove(aPointAssaOut);
+        Thread.sleep(2000);
     }
 
 }

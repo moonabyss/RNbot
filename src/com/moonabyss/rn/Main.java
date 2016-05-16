@@ -6,7 +6,7 @@ public class Main {
         boolean param1;
         int param2;
         if (args.length != 2) {
-            param1 = false;
+            param1 = true;
             param2 = 5;
         } else {
             //param1

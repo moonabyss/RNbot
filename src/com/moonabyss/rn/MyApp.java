@@ -303,20 +303,24 @@ if (true) {
     }
 
     private void flashCrash() throws InterruptedException, FlashCrashException{
-        int black = RN_GREEN.getRGB();
+        int black = RN_BLACK.getRGB();
         //int black = RN_BLACK.getRGB();
         Point restartFlash = new Point(310, 18);
         Point openStation = new Point(840, 1040);
         if (robot.getPixelColor(400, 250).getRGB() == black
                 && robot.getPixelColor(1500, 250).getRGB() == black
                 && robot.getPixelColor(400, 850).getRGB() == black
-                && robot.getPixelColor(1500, 850).getRGB() == black) {
+                && robot.getPixelColor(1500, 20).getRGB() == new Color(252, 235, 162).getRGB()) {
             messages.add("Рестарт");
             display.showMessages(messages);
             moveMouseAndClick(restartFlash);
             Thread.sleep(40000);
             moveMouseAndClick(openStation);
             Thread.sleep(10000);
+            robot.mouseMove(1070, 425);
+            robot.mousePress(InputEvent.BUTTON1_MASK);
+            robot.mouseMove(600, 300);
+            robot.mouseRelease(InputEvent.BUTTON1_MASK);
             throw new FlashCrashException();
         }
     }

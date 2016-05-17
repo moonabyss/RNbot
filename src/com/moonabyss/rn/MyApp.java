@@ -59,7 +59,7 @@ public class MyApp {
                 int y = MouseInfo.getPointerInfo().getLocation().y;
                 messages.add("Mouse X:" + x + ", Y:" + y);*/
 /*
-                if (imagesAreEqual(robot.createScreenCapture(new Rectangle(1165, 356, 32, 32)), advCrest)) {messages.add("совпадают");} else {messages.add("не совпадают");}
+                if (imagesAreEqual(robot.createScreenCapture(new Rectangle(823, 1018, 36, 24)), stationButton)) {messages.add("совпадают");messages.add(String.valueOf(robot.getPixelColor(823, 1018).getRGB()));} else {messages.add("не совпадают");messages.add(String.valueOf(robot.getPixelColor(823, 1018).getRGB()));}
                 display.showMessages(messages);
                 Thread.sleep(1000);
 */
@@ -71,6 +71,7 @@ public class MyApp {
                     messages.add("Бонус: " + checkBonus() + "\tВидео: " + checkAdv());
                 } else {
                     messages.add("Станция закрыта");
+                    checkErrorBuilding();
                 }
                 display.showMessages(messages);
                 Thread.sleep(1000);
@@ -159,9 +160,15 @@ if (true) {
         final int colorRgb = colorPoint.getRGB();
         for (int x = 1; x < image.getWidth(); x++) {
             for (int y = 1; y < image.getHeight(); y++) {
-                if (image.getRGB(x, y) == colorRgb) {
+
+                //hack for vmware
+                int imageRgb = image.getRGB(x, y);
+                if (imageRgb - colorRgb == 0 || Math.abs(imageRgb - colorRgb) == 65793) {
                     return true;
                 }
+                /*if (image.getRGB(x, y) == colorRgb) {
+                    return true;
+                }*/
             }
         }
         return false;
@@ -173,9 +180,18 @@ if (true) {
         }
         for (int x = 1; x < image2.getWidth(); x++) {
             for (int y = 1; y < image2.getHeight(); y++) {
-                if (image1.getRGB(x, y) != image2.getRGB(x, y)) {
-                    return false;
+
+                //hack for vmware
+                int rgb1 = image1.getRGB(x, y);
+                int rgb2 = image2.getRGB(x, y);
+                if (rgb1 - rgb2 != 0) {
+                    if (Math.abs(rgb2 - rgb1) != 65793) {
+                        return false;
+                    }
                 }
+                /*if (image1.getRGB(x, y) != image2.getRGB(x, y)) {
+                    return false;
+                }*/
             }
         }
         return true;
@@ -240,7 +256,6 @@ if (true) {
         BufferedImage firstPlayer = robot.createScreenCapture(new Rectangle(45, 105, 225, 55));
         Thread.sleep(1000);
         do {
-            checkErrorBuilding();
             if (!inAssa()) {
                 return;
             }
@@ -351,10 +366,15 @@ if (true) {
     }
 
     private void checkErrorBuilding() throws FlashCrashException, InterruptedException {
-        checkModalWindow();
-        Thread.sleep(2000);
-        assaMove(aPointAssaOut);
-        Thread.sleep(2000);
+        Point closeModalWindow = new Point(1155, 385);
+        if (imagesAreEqual(robot.createScreenCapture(new Rectangle(1142, 371, 32, 32)), crest)) {
+            moveMouseAndClick(closeModalWindow);
+            Thread.sleep(3000);
+            if (inAssa()) {
+                assaMove(aPointAssaOut);
+                Thread.sleep(2000);
+            }
+        }
     }
 
 }

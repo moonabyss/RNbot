@@ -210,7 +210,7 @@ if (true) {
     }
 
     private void moveMouseAndClick(Point point) throws InterruptedException, FlashCrashException {
-        final int STEP = 6;
+        final int STEP = 4;
         Random rnd = new Random();
         point.x = point.x  + rnd.nextInt(STEP * 2) - STEP;
         point.y = point.y  + rnd.nextInt(STEP * 2) - STEP;

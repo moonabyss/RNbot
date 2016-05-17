@@ -163,7 +163,7 @@ if (true) {
 
                 //hack for vmware
                 int imageRgb = image.getRGB(x, y);
-                if (imageRgb - colorRgb == 0 || Math.abs(imageRgb - colorRgb) == 65793) {
+                if (imageRgb - colorRgb == 0 || Math.abs(imageRgb - colorRgb) == 0x00010101) {
                     return true;
                 }
                 /*if (image.getRGB(x, y) == colorRgb) {
@@ -185,7 +185,7 @@ if (true) {
                 int rgb1 = image1.getRGB(x, y);
                 int rgb2 = image2.getRGB(x, y);
                 if (rgb1 - rgb2 != 0) {
-                    if (Math.abs(rgb2 - rgb1) != 65793) {
+                    if (Math.abs(rgb2 - rgb1) != 0x00010101) {
                         return false;
                     }
                 }

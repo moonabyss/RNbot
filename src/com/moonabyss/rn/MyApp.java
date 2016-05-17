@@ -11,6 +11,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InterruptedIOException;
+import java.util.Random;
 
 /**
  * Created by uncle on 10.05.2016.
@@ -211,9 +212,10 @@ if (true) {
     private void moveMouseAndClick(Point point) throws InterruptedException, FlashCrashException {
         int x = MouseInfo.getPointerInfo().getLocation().x;
         int y = MouseInfo.getPointerInfo().getLocation().y;
+        Random rnd = new Random();
 
         for (int i = 0; i < 25; i++) {
-            robot.mouseMove(x + ((point.x - x) / 25 * i), y + ((point.y - y) / 25 * i));
+            robot.mouseMove(x + rnd.nextInt(12) - 6 + ((point.x - x) / 25 * i), y + rnd.nextInt(12) - 6 + ((point.y - y) / 25 * i));
             Thread.sleep(25);
         }
         robot.mouseMove(point.x, point.y);
@@ -269,7 +271,7 @@ if (true) {
             }
 
             moveMouseAndClick(nextPlayer);
-            Thread.sleep(3000);
+            Thread.sleep(5000);
             currentPlayer = robot.createScreenCapture(new Rectangle(45, 105, 225, 55));
             if (counter > assaSize) {
                 break;

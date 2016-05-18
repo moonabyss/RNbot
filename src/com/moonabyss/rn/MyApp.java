@@ -310,7 +310,6 @@ if (true) {
                 if (imagesAreEqual(robot.createScreenCapture(new Rectangle(1165, 356, 32, 32)), advCrest)) {
                     do {
                         moveMouseAndClick(advClose);
-                        moveMouseAndClick(new Point(0, 0));
                     } while (imagesAreEqual(robot.createScreenCapture(new Rectangle(1165, 356, 32, 32)), advCrest));
                 } else {
                     moveMouseAndClick(advBonus);
@@ -319,8 +318,9 @@ if (true) {
                     } while (imagesAreEqual(robot.createScreenCapture(new Rectangle(1258, 320, 32, 32)), crest));
                     do {
                         moveMouseAndClick(advCrestik);
-                        moveMouseAndClick(new Point(0, 0));
-                    } while (imagesAreEqual(robot.createScreenCapture(new Rectangle(1258, 320, 32, 32)), crest));
+                        robot.mouseMove(MouseInfo.getPointerInfo().getLocation().x + 50, MouseInfo.getPointerInfo().getLocation().y);
+                        Thread.sleep(1000);
+                    } while (imagesAreEqual(robot.createScreenCapture(new Rectangle(1258, 320, 32, 32)), advCrest));
                 }
                 Thread.sleep(3000);
             }

@@ -257,8 +257,6 @@ if (true) {
             if (!inAssa()) {
                 return;
             }
-            messages.add(String.valueOf(i));
-            display.showMessages(messages);
             getBonus();
             if (mode.equalsIgnoreCase("Video")) {
                 viewVideo();

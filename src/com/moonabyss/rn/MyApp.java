@@ -252,18 +252,11 @@ if (true) {
 
     private void getBonusInAssa(String mode) throws InterruptedException, FlashCrashException {
         Point nextPlayer = new Point(1865, 1030);
-        BufferedImage currentPlayer = null;
-        //int counter = 0;
         Thread.sleep(3000);
-        BufferedImage firstPlayer = robot.createScreenCapture(new Rectangle(45, 105, 225, 55));
-        Thread.sleep(1000);
-        //do {
-        for (int i = 0; i < assaSize; i++) {
+        for (int i = 0; i < assaSize - 1; i++) {
             if (!inAssa()) {
                 return;
             }
-            //counter++;
-            //messages.add("Бонус: " + checkBonus() + "\tВидео: " + checkAdv());
             messages.add(String.valueOf(i));
             display.showMessages(messages);
             getBonus();
@@ -274,11 +267,6 @@ if (true) {
 
             moveMouseAndClick(nextPlayer);
             Thread.sleep(5000);
-            currentPlayer = robot.createScreenCapture(new Rectangle(45, 105, 225, 55));
-            /*if (counter >= assaSize - 1) {
-                break;
-            }*/
-        //} while (!imagesAreEqual(firstPlayer, currentPlayer));
         }
         assaMove(aPointAssaOut);
         Thread.sleep(3000);
@@ -339,7 +327,6 @@ if (true) {
 
     private void flashCrash() throws InterruptedException, FlashCrashException{
         int black = RN_BLACK.getRGB();
-        //int black = RN_BLACK.getRGB();
         Point restartFlash = new Point(310, 18);
         Point openStation = new Point(840, 1040);
         if (robot.getPixelColor(400, 250).getRGB() == black

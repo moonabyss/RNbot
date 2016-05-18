@@ -253,11 +253,12 @@ if (true) {
     private void getBonusInAssa(String mode) throws InterruptedException, FlashCrashException {
         Point nextPlayer = new Point(1865, 1030);
         BufferedImage currentPlayer = null;
-        int counter = 0;
+        //int counter = 0;
         Thread.sleep(3000);
         BufferedImage firstPlayer = robot.createScreenCapture(new Rectangle(45, 105, 225, 55));
         Thread.sleep(1000);
-        do {
+        //do {
+        for (int i = 0; i < assaSize; i++) {
             if (!inAssa()) {
                 return;
             }
@@ -274,10 +275,11 @@ if (true) {
             moveMouseAndClick(nextPlayer);
             Thread.sleep(5000);
             currentPlayer = robot.createScreenCapture(new Rectangle(45, 105, 225, 55));
-            if (counter > assaSize) {
+            if (counter >= assaSize - 1) {
                 break;
             }
-        } while (!imagesAreEqual(firstPlayer, currentPlayer));
+        //} while (!imagesAreEqual(firstPlayer, currentPlayer));
+        }
         assaMove(aPointAssaOut);
         Thread.sleep(3000);
     }

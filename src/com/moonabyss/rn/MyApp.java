@@ -7,6 +7,7 @@ import com.moonabyss.FlashCrashException;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -143,7 +144,7 @@ if (true) {
         while (i < 3) {
             bi = robot.createScreenCapture(new Rectangle(aPointBonus[i].x-REC_WIDTH, aPointBonus[i].y-REC_WIDTH, REC_WIDTH*2, REC_WIDTH*2));
 
-            if (findColorPoint(bi, colorRgb[i]) && !(robot.getPixelColor(aPointRedBonus[i].x, aPointRedBonus[i].y).getRed() >= 100 && robot.getPixelColor(aPointRedBonus[i].x, aPointRedBonus[i].y).getRed() <= 170)) {
+            if (findColorPoint(bi, colorRgb[i]) && !(robot.getPixelColor(aPointRedBonus[i].x, aPointRedBonus[i].y).getRed() >= 95 && robot.getPixelColor(aPointRedBonus[i].x, aPointRedBonus[i].y).getRed() <= 175)) {
                 sb.append(i+1).append(' ');
             } else {
                 sb.append('-').append(' ');
@@ -261,7 +262,8 @@ if (true) {
                 return;
             }
             counter++;
-            messages.add("Бонус: " + checkBonus() + "\tВидео: " + checkAdv());
+            //messages.add("Бонус: " + checkBonus() + "\tВидео: " + checkAdv());
+            messages.add(String.valueOf(counter));
             display.showMessages(messages);
             getBonus();
             if (mode.equalsIgnoreCase("Video")) {
@@ -293,18 +295,32 @@ if (true) {
             }
             if (videos.contains(String.valueOf(i + 1))) {
                 moveMouseAndClick(aPointAdv[i]);
+                long startVideo = System.currentTimeMillis();
                 do {
                     Thread.sleep(3000);
+                    if ((System.currentTimeMillis() - startVideo) > 120000) {
+                        moveMouseAndClick(new Point(1274, 336));
+                        Thread.sleep(3000);
+                        //next click
+                        //moveMouseAndClick(new Point(1274, 336));
+                        //Thread.sleep(3000);
+                    }
                 } while (imagesAreEqual(robot.createScreenCapture(new Rectangle(1258, 320, 32, 32)), crest));
                 Thread.sleep(3000);
                 if (imagesAreEqual(robot.createScreenCapture(new Rectangle(1165, 356, 32, 32)), advCrest)) {
-                    moveMouseAndClick(advClose);
+                    do {
+                        moveMouseAndClick(advClose);
+                        moveMouseAndClick(new Point(0, 0));
+                    } while (imagesAreEqual(robot.createScreenCapture(new Rectangle(1165, 356, 32, 32)), advCrest));
                 } else {
                     moveMouseAndClick(advBonus);
                     do {
                         Thread.sleep(3000);
                     } while (imagesAreEqual(robot.createScreenCapture(new Rectangle(1258, 320, 32, 32)), crest));
-                    moveMouseAndClick(advCrestik);
+                    do {
+                        moveMouseAndClick(advCrestik);
+                        moveMouseAndClick(new Point(0, 0));
+                    } while (imagesAreEqual(robot.createScreenCapture(new Rectangle(1258, 320, 32, 32)), crest));
                 }
                 Thread.sleep(3000);
             }
@@ -367,14 +383,32 @@ if (true) {
     }
 
     private void checkErrorBuilding() throws FlashCrashException, InterruptedException {
-        Point closeModalWindow = new Point(1155, 385);
+        Point closeModalWindow = new Point(1156, 388);
+        Point restartWindow = new Point(75, 42);
+        Point openStation = new Point(840, 1040);
         if (imagesAreEqual(robot.createScreenCapture(new Rectangle(1142, 371, 32, 32)), crest)) {
+            /*
             moveMouseAndClick(closeModalWindow);
             Thread.sleep(3000);
             if (inAssa()) {
                 assaMove(aPointAssaOut);
                 Thread.sleep(2000);
             }
+            */
+            messages.add("Рестарт");
+            display.showMessages(messages);
+            robot.keyPress(KeyEvent.VK_F11);
+            Thread.sleep(200);
+            robot.keyRelease(KeyEvent.VK_F11);
+            Thread.sleep(2000);
+            moveMouseAndClick(restartWindow);
+            Thread.sleep(40000);
+            moveMouseAndClick(openStation);
+            Thread.sleep(10000);
+            robot.mouseMove(1070, 425);
+            robot.mousePress(InputEvent.BUTTON1_MASK);
+            robot.mouseMove(600, 300);
+            robot.mouseRelease(InputEvent.BUTTON1_MASK);
         }
     }
 

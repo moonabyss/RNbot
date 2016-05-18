@@ -262,9 +262,9 @@ if (true) {
             if (!inAssa()) {
                 return;
             }
-            counter++;
+            //counter++;
             //messages.add("Бонус: " + checkBonus() + "\tВидео: " + checkAdv());
-            messages.add(String.valueOf(counter));
+            messages.add(String.valueOf(i));
             display.showMessages(messages);
             getBonus();
             if (mode.equalsIgnoreCase("Video")) {
@@ -275,9 +275,9 @@ if (true) {
             moveMouseAndClick(nextPlayer);
             Thread.sleep(5000);
             currentPlayer = robot.createScreenCapture(new Rectangle(45, 105, 225, 55));
-            if (counter >= assaSize - 1) {
+            /*if (counter >= assaSize - 1) {
                 break;
-            }
+            }*/
         //} while (!imagesAreEqual(firstPlayer, currentPlayer));
         }
         assaMove(aPointAssaOut);

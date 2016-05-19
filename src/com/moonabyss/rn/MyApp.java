@@ -61,7 +61,7 @@ public class MyApp {
                 int y = MouseInfo.getPointerInfo().getLocation().y;
                 messages.add("Mouse X:" + x + ", Y:" + y);*/
 /*
-                if (imagesAreEqual(robot.createScreenCapture(new Rectangle(823, 1018, 36, 24)), stationButton)) {messages.add("совпадают");messages.add(String.valueOf(robot.getPixelColor(823, 1018).getRGB()));} else {messages.add("не совпадают");messages.add(String.valueOf(robot.getPixelColor(823, 1018).getRGB()));}
+                if (imagesAreEqual(robot.createScreenCapture(new Rectangle(1165, 356, 32, 32)), advCrest)) {messages.add("совпадают");}
                 display.showMessages(messages);
                 Thread.sleep(1000);
 */
@@ -275,7 +275,7 @@ if (true) {
         videos = checkAdv();
         final Point advClose = new Point(960, 680);
         final Point advBonus = new Point(975, 760);
-        final Point advCrestik = new Point(1180, 375);
+        final Point advCrestik = new Point(1180, 371);
 
         for (int i = 0; i < 3; i++) {
             if (!(atStation() || inAssa())) {
@@ -296,9 +296,7 @@ if (true) {
                 } while (imagesAreEqual(robot.createScreenCapture(new Rectangle(1258, 320, 32, 32)), crest));
                 Thread.sleep(3000);
                 if (imagesAreEqual(robot.createScreenCapture(new Rectangle(1165, 356, 32, 32)), advCrest)) {
-                    do {
-                        moveMouseAndClick(advClose);
-                    } while (imagesAreEqual(robot.createScreenCapture(new Rectangle(1165, 356, 32, 32)), advCrest));
+                    moveMouseAndClick(advClose);
                 } else {
                     moveMouseAndClick(advBonus);
                     do {
@@ -308,7 +306,7 @@ if (true) {
                         moveMouseAndClick(advCrestik);
                         robot.mouseMove(MouseInfo.getPointerInfo().getLocation().x + 50, MouseInfo.getPointerInfo().getLocation().y);
                         Thread.sleep(1000);
-                    } while (imagesAreEqual(robot.createScreenCapture(new Rectangle(1258, 320, 32, 32)), advCrest));
+                    } while (imagesAreEqual(robot.createScreenCapture(new Rectangle(1165, 356, 32, 32)), advCrest));
                 }
                 Thread.sleep(3000);
             }

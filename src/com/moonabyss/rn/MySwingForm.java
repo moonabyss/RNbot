@@ -46,9 +46,9 @@ public class MySwingForm extends JFrame implements MyDisplay {
             //setTitle(str);
         }
 
-        /** grab image*/
+        /** grab image
         try {
-            image.setImage(new Robot().createScreenCapture(new Rectangle(823, 1018, 36, 24)));
+            image.setImage(new Robot().createScreenCapture(new Rectangle(1165, 356, 32, 32)));
             ImageIO.write(new Robot().createScreenCapture(new Rectangle(823, 1018, 36, 24)),"bmp", new File("station.bmp"));
         } catch (AWTException e) {
             e.printStackTrace();

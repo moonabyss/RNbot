@@ -1,6 +1,5 @@
 package com.moonabyss.rn;
 
-import com.moonabyss.FixedQueue;
 import com.moonabyss.FixedStringQueueWithDate;
 import com.moonabyss.FlashCrashException;
 
@@ -9,18 +8,18 @@ import java.awt.*;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
-import java.io.InterruptedIOException;
-import java.util.Random;
 
 /**
  * Created by uncle on 10.05.2016.
  */
 public class MyApp {
 
+    private static int countOfVideoBonuses = 0;
     boolean solo = false;
     int assaSize = 5;
+    int videoDuration = 120;
+    boolean video = true;
     private final static Color RN_GREEN = new Color(37, 136, 69);
     private final static Color RN_BLACK = Color.BLACK;
     private static  final Point[] aPointBonus = {new Point(1050, 766), new Point(1403, 683), new Point(1582, 539)};
@@ -29,7 +28,7 @@ public class MyApp {
     private static  final Point[] aPointAssaIn = {new Point(1894, 622), new Point(1707, 400), new Point(1726, 516)};
     private static  final Point[] aPointAssaOut = {new Point(1880, 35), new Point(1893, 374)};
 
-    FixedStringQueueWithDate<String> messages = new FixedStringQueueWithDate<>(10);
+    private FixedStringQueueWithDate<String> messages = new FixedStringQueueWithDate<>(10);
     private MyDisplay display = new MySwingForm();
     private BufferedImage stationButton;
     private BufferedImage stationAssaButton;
@@ -49,6 +48,8 @@ public class MyApp {
         } else {
             messages.add("Размер ассы " + assaSize);
         }
+        messages.add("Ожидание видео " + videoDuration);
+        messages.add("Просмотр видео " + video);
         try {
             robot = new Robot();
         } catch (AWTException e) {
@@ -70,7 +71,7 @@ public class MyApp {
 
                 //messages.add("Mouse X:" + x + ", Y:" + y + " " + robot.getPixelColor(1582, 494));
                 if (atStation()) {
-                    messages.add("Бонус: " + checkBonus() + "\tВидео: " + checkAdv());
+                    //messages.add("Бонус: " + checkBonus() + "\tВидео: " + checkAdv());
                 } else {
                     messages.add("Станция закрыта");
                     checkErrorBuilding();
@@ -81,16 +82,18 @@ public class MyApp {
 if (true) {
                 //Main loop
                 if (atStation()) {
-                    showMyBonuses();
+                    //showMyBonuses();
                     getBonus();
                     Thread.sleep(2000);
                     if (!solo) {
                         assaMove(aPointAssaIn);
                         getBonusInAssa("Bonus");
+                    } else {
+                        antiSleep();
                     }
                 }
-                if (atStation()) {
-                    showMyBonuses();
+                if (atStation() && video) {
+                    //showMyBonuses();
                     getBonus();
                     viewVideo();
                     Thread.sleep(2000);
@@ -100,6 +103,8 @@ if (true) {
                     } else {
                         antiSleep();
                     }
+                } else {
+                    Thread.sleep(30*1000);
                 }
 }
             } catch (InterruptedException e) {
@@ -286,12 +291,11 @@ if (true) {
                 long startVideo = System.currentTimeMillis();
                 do {
                     Thread.sleep(3000);
-                    if ((System.currentTimeMillis() - startVideo) > 120000) {
+                    if ((System.currentTimeMillis() - startVideo) > videoDuration*1000) {
                         moveMouseAndClick(new Point(1274, 336));
                         Thread.sleep(3000);
-                        //next click
-                        //moveMouseAndClick(new Point(1274, 336));
-                        //Thread.sleep(3000);
+                        moveMouseAndClick(new Point(1149, 430));
+                        Thread.sleep(3000);
                     }
                 } while (imagesAreEqual(robot.createScreenCapture(new Rectangle(1258, 320, 32, 32)), crest));
                 Thread.sleep(3000);
@@ -299,6 +303,7 @@ if (true) {
                     moveMouseAndClick(advClose);
                 } else {
                     moveMouseAndClick(advBonus);
+                    addMessageAndDisplay("Просмотр ролика #" + ++countOfVideoBonuses);
                     do {
                         Thread.sleep(3000);
                     } while (imagesAreEqual(robot.createScreenCapture(new Rectangle(1258, 320, 32, 32)), crest));
@@ -329,8 +334,7 @@ if (true) {
                 && robot.getPixelColor(1500, 250).getRGB() == black
                 && robot.getPixelColor(400, 850).getRGB() == black
                 && robot.getPixelColor(1500, 20).getRGB() == new Color(252, 235, 162).getRGB()) {
-            messages.add("Рестарт");
-            display.showMessages(messages);
+            addMessageAndDisplay("Рестарт");
             moveMouseAndClick(restartFlash);
             Thread.sleep(40000);
             moveMouseAndClick(openStation);
@@ -363,8 +367,7 @@ if (true) {
     }
 
     private void showMyBonuses() {
-        messages.add("Бонус: " + checkBonus() + "\tВидео: " + checkAdv());
-        display.showMessages(messages);
+        addMessageAndDisplay("Бонус: " + checkBonus() + "\tВидео: " + checkAdv());
     }
 
     private void checkErrorBuilding() throws FlashCrashException, InterruptedException {
@@ -380,8 +383,7 @@ if (true) {
                 Thread.sleep(2000);
             }
             */
-            messages.add("Рестарт");
-            display.showMessages(messages);
+            addMessageAndDisplay("Рестарт");
             robot.keyPress(KeyEvent.VK_F11);
             Thread.sleep(200);
             robot.keyRelease(KeyEvent.VK_F11);
@@ -395,6 +397,11 @@ if (true) {
             robot.mouseMove(600, 300);
             robot.mouseRelease(InputEvent.BUTTON1_MASK);
         }
+    }
+
+    private void addMessageAndDisplay(String msg) {
+        messages.add(msg);
+        display.showMessages(messages);
     }
 
 }

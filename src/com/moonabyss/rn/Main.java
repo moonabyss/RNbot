@@ -5,9 +5,11 @@ public class Main {
     public static void main(String[] args) {
         boolean param1;
         int param2;
-        if (args.length != 2) {
+        boolean param3;
+        if (args.length != 3) {
             param1 = true;
             param2 = 5;
+            param3 = true;
         } else {
             //param1
             if (args[0].contains("solo=yes")) {
@@ -26,7 +28,14 @@ public class Main {
             } else {
                 param2 = 5;
             }
+            //param3
+            if (args[2].contains("video=no")) {
+                param3 = false;
+            } else {
+                param3 = true;
+            }
         }
+
         final int FPARAM2 = param2;
         Runnable r = new Runnable() {
             @Override
@@ -34,6 +43,7 @@ public class Main {
                 MyApp app = new MyApp();
                 app.solo = param1;
                 app.assaSize = FPARAM2;
+                app.video = param3;
                 app.doJob();
             }
         };

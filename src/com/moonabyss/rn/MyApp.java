@@ -28,6 +28,8 @@ public class MyApp {
     private static  final Point[] aPointAssaIn = {new Point(1894, 622), new Point(1707, 400), new Point(1726, 516)};
     private static  final Point[] aPointAssaOut = {new Point(1880, 35), new Point(1893, 374)};
 
+    private static int collectedBonuses = 0;
+
     private FixedStringQueueWithDate<String> messages = new FixedStringQueueWithDate<>(10);
     private MyDisplay display = new MySwingForm();
     private BufferedImage stationButton;
@@ -82,17 +84,24 @@ public class MyApp {
 if (true) {
                 //Main loop
                 if (atStation()) {
+                    collectedBonuses = 0;
                     //showMyBonuses();
                     getBonus();
                     Thread.sleep(2000);
                     if (!solo) {
                         assaMove(aPointAssaIn);
-                        getBonusInAssa("Bonus");
+                        getBonusInAssa();
                     } else {
                         antiSleep();
                     }
+                    if (collectedBonuses < 1) {
+                        viewVideo();
+                    }
+                    //addMessageAndDisplay(String.valueOf(collectedBonuses));
+                }  else {
+                    Thread.sleep(30*1000);
                 }
-                if (atStation() && video) {
+                /*if (atStation() && video && collectedBonuses < 1) {
                     //showMyBonuses();
                     getBonus();
                     viewVideo();
@@ -105,7 +114,7 @@ if (true) {
                     }
                 } else {
                     Thread.sleep(30*1000);
-                }
+                }*/
 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -249,13 +258,14 @@ if (true) {
             }
             if (bonuses.contains(String.valueOf(i + 1))) {
                 moveMouseAndClick(aPointBonus[i]);
+                collectedBonuses++;
                 Thread.sleep(1500);
                 checkModalWindow();
             }
         }
     }
 
-    private void getBonusInAssa(String mode) throws InterruptedException, FlashCrashException {
+    private void getBonusInAssa() throws InterruptedException, FlashCrashException {
         Point nextPlayer = new Point(1865, 1030);
         Thread.sleep(3000);
         for (int i = 0; i < assaSize - 1; i++) {
@@ -263,7 +273,7 @@ if (true) {
                 return;
             }
             getBonus();
-            if (mode.equalsIgnoreCase("Video")) {
+            if (collectedBonuses < 1) {
                 viewVideo();
                 getBonus();
             }
@@ -322,6 +332,7 @@ if (true) {
         Point closeModalWindow = new Point(1155, 385);
         if (imagesAreEqual(robot.createScreenCapture(new Rectangle(1142, 371, 32, 32)), crest)) {
             moveMouseAndClick(closeModalWindow);
+            collectedBonuses--;
             Thread.sleep(3000);
         }
     }
@@ -373,6 +384,7 @@ if (true) {
     private void checkErrorBuilding() throws FlashCrashException, InterruptedException {
         Point closeModalWindow = new Point(1156, 388);
         Point restartWindow = new Point(75, 42);
+        Point[] fullScreen = {new Point(1902, 43), new Point(1891, 230)};
         Point openStation = new Point(840, 1040);
         if (imagesAreEqual(robot.createScreenCapture(new Rectangle(1142, 371, 32, 32)), crest)) {
             /*
@@ -390,8 +402,11 @@ if (true) {
             Thread.sleep(2000);
             moveMouseAndClick(restartWindow);
             Thread.sleep(40000);
+            moveMouseAndClick(fullScreen[0]);
+            moveMouseAndClick(fullScreen[1]);
+            Thread.sleep(2000);
             moveMouseAndClick(openStation);
-            Thread.sleep(10000);
+            Thread.sleep(5000);
             robot.mouseMove(1070, 425);
             robot.mousePress(InputEvent.BUTTON1_MASK);
             robot.mouseMove(600, 300);

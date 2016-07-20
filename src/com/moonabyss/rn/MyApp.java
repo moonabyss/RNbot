@@ -296,7 +296,9 @@ if (true) {
             if (!(atStation() || inAssa())) {
                 return;
             }
+
             if (videos.contains(String.valueOf(i + 1))) {
+                boolean lagVideo = false;
                 moveMouseAndClick(aPointAdv[i]);
                 long startVideo = System.currentTimeMillis();
                 do {
@@ -306,24 +308,27 @@ if (true) {
                         Thread.sleep(3000);
                         moveMouseAndClick(new Point(1149, 430));
                         Thread.sleep(3000);
+                        lagVideo = true;
                     }
                 } while (imagesAreEqual(robot.createScreenCapture(new Rectangle(1258, 320, 32, 32)), crest));
                 Thread.sleep(3000);
-                if (imagesAreEqual(robot.createScreenCapture(new Rectangle(1165, 356, 32, 32)), advCrest)) {
-                    moveMouseAndClick(advClose);
-                } else {
-                    moveMouseAndClick(advBonus);
-                    addMessageAndDisplay("Просмотр ролика #" + ++countOfVideoBonuses);
-                    do {
-                        Thread.sleep(3000);
-                    } while (imagesAreEqual(robot.createScreenCapture(new Rectangle(1258, 320, 32, 32)), crest));
-                    do {
-                        moveMouseAndClick(advCrestik);
-                        robot.mouseMove(MouseInfo.getPointerInfo().getLocation().x + 50, MouseInfo.getPointerInfo().getLocation().y);
-                        Thread.sleep(1000);
-                    } while (imagesAreEqual(robot.createScreenCapture(new Rectangle(1165, 356, 32, 32)), advCrest));
+                if (!lagVideo) {
+                    if (imagesAreEqual(robot.createScreenCapture(new Rectangle(1165, 356, 32, 32)), advCrest)) {
+                        moveMouseAndClick(advClose);
+                    } else {
+                        moveMouseAndClick(advBonus);
+                        addMessageAndDisplay("Просмотр ролика #" + ++countOfVideoBonuses);
+                        do {
+                            Thread.sleep(3000);
+                        } while (imagesAreEqual(robot.createScreenCapture(new Rectangle(1258, 320, 32, 32)), crest));
+                        do {
+                            moveMouseAndClick(advCrestik);
+                            robot.mouseMove(MouseInfo.getPointerInfo().getLocation().x + 50, MouseInfo.getPointerInfo().getLocation().y);
+                            Thread.sleep(1000);
+                        } while (imagesAreEqual(robot.createScreenCapture(new Rectangle(1165, 356, 32, 32)), advCrest));
+                    }
+                    Thread.sleep(3000);
                 }
-                Thread.sleep(3000);
             }
         }
     }

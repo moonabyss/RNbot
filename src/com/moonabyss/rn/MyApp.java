@@ -291,6 +291,7 @@ if (true) {
         final Point advClose = new Point(960, 680);
         final Point advBonus = new Point(975, 760);
         final Point advCrestik = new Point(1180, 371);
+        BufferedImage bi = null;
 
         for (int i = 0; i < 3; i++) {
             if (!(atStation() || inAssa())) {
@@ -300,59 +301,43 @@ if (true) {
             if (videos.contains(String.valueOf(i + 1))) {
                 moveMouseAndClick(aPointAdv[i]);
                 //ожидане появления окна ролика
-                do {
-                    Thread.sleep(1000);
-                    //addMessageAndDisplay("ожидаю окно ролика");
-                } while (!imagesAreEqual(robot.createScreenCapture(new Rectangle(1258, 320, 32, 32)), crest));
+                Thread.sleep(3000);
                 long startVideo = System.currentTimeMillis();
                 do {
-                    //addMessageAndDisplay("жду окончания ролика");
+                    addMessageAndDisplay("жду окончания ролика");
                     startVideo = isVideoPlaying(startVideo);
-                } while (imagesAreEqual(robot.createScreenCapture(new Rectangle(1258, 320, 32, 32)), crest));
+                //} while (imagesAreEqual(robot.createScreenCapture(new Rectangle(1258, 320, 32, 32)), crest));
+                } while (findColorPoint(robot.createScreenCapture(new Rectangle(1272, 334, 3, 3)), new Color(255, 255, 255)));
                 //ожидание окна после ролика
-                //addMessageAndDisplay("жду окно после ролика");
-                while ((System.currentTimeMillis() - startVideo) < 7*1000){
-                    Thread.sleep(1000);
-                    if (imagesAreEqual(robot.createScreenCapture(new Rectangle(1205, 296, 32, 32)), crest)
-                            || imagesAreEqual(robot.createScreenCapture(new Rectangle(1165, 356, 32, 32)), crest)) break;
-                }
+                Thread.sleep(5000);
 
-                if (imagesAreEqual(robot.createScreenCapture(new Rectangle(1165, 356, 32, 32)), advCrest)) {
-                    //addMessageAndDisplay("окно без второго бонуса");
+                if (findColorPoint(robot.createScreenCapture(new Rectangle(1179, 370, 3, 3)), new Color(255, 255, 255))) {
+                    addMessageAndDisplay("окно без второго бонуса");
                     do {
-                        //addMessageAndDisplay("закрываю окно с бонусом");
+                        addMessageAndDisplay("закрываю окно с бонусом");
                         moveMouseAndClick(advCrestik);
                         robot.mouseMove(MouseInfo.getPointerInfo().getLocation().x + 50, MouseInfo.getPointerInfo().getLocation().y);
                         Thread.sleep(2000);
-                    } while (imagesAreEqual(robot.createScreenCapture(new Rectangle(1165, 356, 32, 32)), advCrest));
+                    } while (findColorPoint(robot.createScreenCapture(new Rectangle(1179, 370, 3, 3)), new Color(255, 255, 255)));
                 } else {
-                    //addMessageAndDisplay("окно со вторым бонусом");
+                    addMessageAndDisplay("окно со вторым бонусом");
                     moveMouseAndClick(advBonus);
                     addMessageAndDisplay("Просмотр ролика #" + ++countOfVideoBonuses);
                     //ожидане появления окна ролика
-                    do {
-                        //addMessageAndDisplay("жду начало второго ролика");
-                        Thread.sleep(1000);
-                    } while (!imagesAreEqual(robot.createScreenCapture(new Rectangle(1258, 320, 32, 32)), crest));
+                    Thread.sleep(5000);
                     startVideo = System.currentTimeMillis();
                     do {
-                        //addMessageAndDisplay("жду окончания второго ролика");
+                        addMessageAndDisplay("жду окончания второго ролика");
                         startVideo = isVideoPlaying(startVideo);
-                    } while (imagesAreEqual(robot.createScreenCapture(new Rectangle(1258, 320, 32, 32)), crest));
+                    } while (findColorPoint(robot.createScreenCapture(new Rectangle(1272, 334, 3, 3)), new Color(255, 255, 255)));
                     //ожидане появления окна бонуса
-                    startVideo = System.currentTimeMillis();
-                    //addMessageAndDisplay("жду окно после второго ролика");
-                    while ((System.currentTimeMillis() - startVideo) < 7*1000){
-                        Thread.sleep(1000);
-                        if (imagesAreEqual(robot.createScreenCapture(new Rectangle(1165, 356, 32, 32)), crest)
-                                || imagesAreEqual(robot.createScreenCapture(new Rectangle(1165, 356, 32, 32)), advCrest)) break;
-                    }
+                    Thread.sleep(5000);
                     do {
-                        //addMessageAndDisplay("закрываю окно с бонусом");
+                        addMessageAndDisplay("закрываю окно с бонусом");
                         moveMouseAndClick(advCrestik);
                         robot.mouseMove(MouseInfo.getPointerInfo().getLocation().x + 50, MouseInfo.getPointerInfo().getLocation().y);
                         Thread.sleep(2000);
-                    } while (imagesAreEqual(robot.createScreenCapture(new Rectangle(1165, 356, 32, 32)), advCrest));
+                    } while (findColorPoint(robot.createScreenCapture(new Rectangle(1179, 370, 3, 3)), new Color(255, 255, 255)));
                 }
                 Thread.sleep(3000);
             }

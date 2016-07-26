@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="RNbot:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/RNbot_jar</output-path>
+    <root id="archive" name="RNbot.jar">
+      <element id="module-output" name="RNbot" />
+    </root>
+  </artifact>
+</component>

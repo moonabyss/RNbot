@@ -18,7 +18,7 @@ public class MyApp {
     private static int countOfVideoBonuses = 0;
     boolean solo = false;
     int assaSize = 5;
-    int videoDuration = 120;
+    int videoDuration = 80;
     boolean video = true;
     private final static Color RN_GREEN = new Color(37, 136, 69);
     private final static Color RN_BLACK = Color.BLACK;
@@ -298,39 +298,77 @@ if (true) {
             }
 
             if (videos.contains(String.valueOf(i + 1))) {
-                boolean lagVideo = false;
                 moveMouseAndClick(aPointAdv[i]);
+                //ожидане появления окна ролика
+                do {
+                    Thread.sleep(1000);
+                    //addMessageAndDisplay("ожидаю окно ролика");
+                } while (!imagesAreEqual(robot.createScreenCapture(new Rectangle(1258, 320, 32, 32)), crest));
                 long startVideo = System.currentTimeMillis();
                 do {
-                    Thread.sleep(3000);
-                    if ((System.currentTimeMillis() - startVideo) > videoDuration*1000) {
-                        moveMouseAndClick(new Point(1274, 336));
-                        Thread.sleep(3000);
-                        moveMouseAndClick(new Point(1149, 430));
-                        Thread.sleep(3000);
-                        lagVideo = true;
-                    }
+                    //addMessageAndDisplay("жду окончания ролика");
+                    startVideo = isVideoPlaying(startVideo);
                 } while (imagesAreEqual(robot.createScreenCapture(new Rectangle(1258, 320, 32, 32)), crest));
-                Thread.sleep(3000);
-                if (!lagVideo) {
-                    if (imagesAreEqual(robot.createScreenCapture(new Rectangle(1165, 356, 32, 32)), advCrest)) {
-                        moveMouseAndClick(advClose);
-                    } else {
-                        moveMouseAndClick(advBonus);
-                        addMessageAndDisplay("Просмотр ролика #" + ++countOfVideoBonuses);
-                        do {
-                            Thread.sleep(3000);
-                        } while (imagesAreEqual(robot.createScreenCapture(new Rectangle(1258, 320, 32, 32)), crest));
-                        do {
-                            moveMouseAndClick(advCrestik);
-                            robot.mouseMove(MouseInfo.getPointerInfo().getLocation().x + 50, MouseInfo.getPointerInfo().getLocation().y);
-                            Thread.sleep(1000);
-                        } while (imagesAreEqual(robot.createScreenCapture(new Rectangle(1165, 356, 32, 32)), advCrest));
-                    }
-                    Thread.sleep(3000);
+                //ожидание окна после ролика
+                //addMessageAndDisplay("жду окно после ролика");
+                while ((System.currentTimeMillis() - startVideo) < 7*1000){
+                    Thread.sleep(1000);
+                    if (imagesAreEqual(robot.createScreenCapture(new Rectangle(1205, 296, 32, 32)), crest)
+                            || imagesAreEqual(robot.createScreenCapture(new Rectangle(1165, 356, 32, 32)), crest)) break;
                 }
+
+                if (imagesAreEqual(robot.createScreenCapture(new Rectangle(1165, 356, 32, 32)), advCrest)) {
+                    //addMessageAndDisplay("окно без второго бонуса");
+                    do {
+                        //addMessageAndDisplay("закрываю окно с бонусом");
+                        moveMouseAndClick(advCrestik);
+                        robot.mouseMove(MouseInfo.getPointerInfo().getLocation().x + 50, MouseInfo.getPointerInfo().getLocation().y);
+                        Thread.sleep(2000);
+                    } while (imagesAreEqual(robot.createScreenCapture(new Rectangle(1165, 356, 32, 32)), advCrest));
+                } else {
+                    //addMessageAndDisplay("окно со вторым бонусом");
+                    moveMouseAndClick(advBonus);
+                    addMessageAndDisplay("Просмотр ролика #" + ++countOfVideoBonuses);
+                    //ожидане появления окна ролика
+                    do {
+                        //addMessageAndDisplay("жду начало второго ролика");
+                        Thread.sleep(1000);
+                    } while (!imagesAreEqual(robot.createScreenCapture(new Rectangle(1258, 320, 32, 32)), crest));
+                    startVideo = System.currentTimeMillis();
+                    do {
+                        //addMessageAndDisplay("жду окончания второго ролика");
+                        startVideo = isVideoPlaying(startVideo);
+                    } while (imagesAreEqual(robot.createScreenCapture(new Rectangle(1258, 320, 32, 32)), crest));
+                    //ожидане появления окна бонуса
+                    startVideo = System.currentTimeMillis();
+                    //addMessageAndDisplay("жду окно после второго ролика");
+                    while ((System.currentTimeMillis() - startVideo) < 7*1000){
+                        Thread.sleep(1000);
+                        if (imagesAreEqual(robot.createScreenCapture(new Rectangle(1165, 356, 32, 32)), crest)
+                                || imagesAreEqual(robot.createScreenCapture(new Rectangle(1165, 356, 32, 32)), advCrest)) break;
+                    }
+                    do {
+                        //addMessageAndDisplay("закрываю окно с бонусом");
+                        moveMouseAndClick(advCrestik);
+                        robot.mouseMove(MouseInfo.getPointerInfo().getLocation().x + 50, MouseInfo.getPointerInfo().getLocation().y);
+                        Thread.sleep(2000);
+                    } while (imagesAreEqual(robot.createScreenCapture(new Rectangle(1165, 356, 32, 32)), advCrest));
+                }
+                Thread.sleep(3000);
             }
         }
+    }
+
+    private long isVideoPlaying(long startVideo) throws InterruptedException, FlashCrashException {
+        Thread.sleep(3000);
+        if ((System.currentTimeMillis() - startVideo) > videoDuration*1000) {
+            moveMouseAndClick(new Point(1274, 336));
+            Thread.sleep(3000);
+            moveMouseAndClick(new Point(1004, 638)); //проиграть ролик заново
+            Thread.sleep(3000);
+            startVideo = System.currentTimeMillis();
+        }
+        return startVideo;
     }
 
     private void checkModalWindow() throws InterruptedException, FlashCrashException{

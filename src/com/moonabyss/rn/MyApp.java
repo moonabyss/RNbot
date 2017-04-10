@@ -9,17 +9,27 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by uncle on 10.05.2016.
  */
 public class MyApp {
 
+    enum AppState {OUT_OF_STATION}
+
     private static int countOfVideoBonuses = 0;
-    boolean solo = false;
-    int assaSize = 5;
-    int videoDuration = 80;
-    boolean video = true;
+    boolean solo;
+    int assaSize;
+    int videoDuration;
+    boolean video;
+    boolean safeNight;
+    int nightStart;
+    int nightEnd;
+    AppState appState = AppState.OUT_OF_STATION;
+
     private final static Color RN_GREEN = new Color(37, 136, 69);
     private final static Color RN_BLACK = Color.BLACK;
     private static  final Point[] aPointBonus = {new Point(1050, 766), new Point(1403, 683), new Point(1582, 539)};
@@ -41,17 +51,37 @@ public class MyApp {
 
     public MyApp() {
         loadImages();
-        messages.add("Бот загружен");
     }
 
     public void doJob() {
-        if (solo) {
-            messages.add("Соло режим");
-        } else {
-            messages.add("Размер ассы " + assaSize);
+        int i=0;
+
+        while (true) {
+            if(appState == AppState.OUT_OF_STATION) {
+                //
+            } else if (appState == AppState.OUT_OF_STATION) {
+                //
+            }
+
+
+            addMessageAndDisplay(String.valueOf(++i) + " " + appState.toString());
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
         }
-        messages.add("Ожидание видео " + videoDuration);
-        messages.add("Просмотр видео " + video);
+    }
+
+    public void doJob2() {
+        messages.add("solo " + solo);
+        messages.add("assa " + assaSize);
+        messages.add("videoDuration " + videoDuration);
+        messages.add("video " + video);
+        messages.add("safeNight " + safeNight);
+        messages.add("nightStart " + nightStart);
+        messages.add("nightEnd " + nightEnd);
         try {
             robot = new Robot();
         } catch (AWTException e) {
@@ -94,27 +124,13 @@ if (true) {
                     } else {
                         antiSleep();
                     }
-                    if (collectedBonuses < 1) {
+                    //if (collectedBonuses < 1) {
                         viewVideo();
-                    }
+                    //}
                     //addMessageAndDisplay(String.valueOf(collectedBonuses));
                 }  else {
                     Thread.sleep(30*1000);
                 }
-                /*if (atStation() && video && collectedBonuses < 1) {
-                    //showMyBonuses();
-                    getBonus();
-                    viewVideo();
-                    Thread.sleep(2000);
-                    if (!solo) {
-                        assaMove(aPointAssaIn);
-                        getBonusInAssa("Video");
-                    } else {
-                        antiSleep();
-                    }
-                } else {
-                    Thread.sleep(30*1000);
-                }*/
 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -272,10 +288,14 @@ if (true) {
             if (!inAssa()) {
                 return;
             }
-            getBonus();
+            if ((safeNight == false) || (safeNight == true && !isNight())) {
+                getBonus();
+            }
             if (collectedBonuses < 1) {
                 viewVideo();
-                getBonus();
+                if ((safeNight == false) || (safeNight == true && !isNight())) {
+                    getBonus();
+                }
             }
 
             moveMouseAndClick(nextPlayer);
@@ -350,7 +370,8 @@ if (true) {
             moveMouseAndClick(new Point(1274, 336));
             Thread.sleep(3000);
             moveMouseAndClick(new Point(1004, 638)); //проиграть ролик заново
-            Thread.sleep(3000);
+            addMessageAndDisplay("повтор ролика");
+            Thread.sleep(6000);
             startVideo = System.currentTimeMillis();
         }
         return startVideo;
@@ -445,6 +466,24 @@ if (true) {
     private void addMessageAndDisplay(String msg) {
         messages.add(msg);
         display.showMessages(messages);
+    }
+
+    public void setParams(MyParams params) {
+        solo = params.solo;
+        assaSize = params.size;
+        video = params.video;
+        videoDuration = params.videoDuration;
+        safeNight = params.safeNight;
+        nightStart = params.nightStart;
+        nightEnd = params.nightEnd;
+
+    }
+
+    private boolean isNight() {
+        DateFormat dateFormat = new SimpleDateFormat("H");
+        Date date = new Date();
+        int hours = Integer.parseInt(dateFormat.format(date));
+        return hours >= nightStart && hours < nightEnd;
     }
 
 }

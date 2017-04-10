@@ -3,51 +3,86 @@ package com.moonabyss.rn;
 public class Main {
 
     public static void main(String[] args) {
-        boolean param1;
-        int param2;
-        boolean param3;
-        if (args.length != 3) {
-            param1 = true;
-            param2 = 5;
-            param3 = true;
-        } else {
-            //param1
-            if (args[0].contains("solo=yes")) {
-                param1 = true;
-            } else {
-                param1 = false;
-            }
-            //param2
-            if (args[1].contains("assa")) {
-                String[] aParam2 = args[1].split("=");
-                try {
-                    param2 = Integer.parseInt(aParam2[1]);
-                } catch (NumberFormatException e) {
-                    param2 = 5;
+
+        final MyParams myParams = new MyParams();
+
+        for (int i = 0; i < args.length; i++) {
+            String[] params = args[i].split("=");
+
+            // solo/assa mode
+            if (params[0].equalsIgnoreCase("solo")){
+                if (params[1].contains("yes") || params[1].contains("true")){
+                    myParams.solo = true;
+                } else {
+                    myParams.solo = false;
                 }
-            } else {
-                param2 = 5;
             }
-            //param3
-            if (args[2].contains("video=no")) {
-                param3 = false;
-            } else {
-                param3 = true;
+
+            //assa's size
+            if (params[0].equalsIgnoreCase("assa")){
+                try {
+                    myParams.size = Integer.parseInt(params[1]);
+                } catch (NumberFormatException e) {
+                    myParams.size = 5;
+                }
+            }
+
+            // watch video
+            if (params[0].equalsIgnoreCase("video")){
+                if (params[1].contains("yes") || params[1].contains("true")){
+                    myParams.video = true;
+                } else {
+                    myParams.video = false;
+                }
+            }
+
+            //video duration
+            if (params[0].equalsIgnoreCase("videoduration")){
+                try {
+                    myParams.videoDuration = Integer.parseInt(params[1]);
+                } catch (NumberFormatException e) {
+                    myParams.videoDuration = 80;
+                }
+            }
+
+            // catch bonuses in assa during night
+            if (params[0].equalsIgnoreCase("safenight")){
+                if (params[1].contains("yes") || params[1].contains("true")){
+                    myParams.safeNight = true;
+                } else {
+                    myParams.safeNight = false;
+                }
+            }
+
+            //night duration
+            if (params[0].equalsIgnoreCase("nightstart")){
+                try {
+                    myParams.nightStart = Integer.parseInt(params[1]);
+                } catch (NumberFormatException e) {
+                    myParams.nightStart = 2;
+                }
+            }
+            if (params[0].equalsIgnoreCase("nightend")){
+                try {
+                    myParams.nightEnd = Integer.parseInt(params[1]);
+                } catch (NumberFormatException e) {
+                    myParams.nightEnd = 8;
+                }
             }
         }
 
-        final int FPARAM2 = param2;
-        Runnable r = new Runnable() {
-            @Override
-            public void run() {
-                MyApp app = new MyApp();
-                app.solo = param1;
-                app.assaSize = FPARAM2;
-                app.video = param3;
-                app.doJob();
-            }
-        };
+        Runnable r = () -> {MyApp app = new MyApp(); app.setParams(myParams); app.doJob();};
         new Thread(r).start();
     }
 
+}
+
+class MyParams {
+    boolean solo = false;
+    boolean video = true;
+    boolean safeNight = false;
+    int size = 5;
+    int videoDuration = 80;
+    int nightStart = 2;
+    int nightEnd = 8;
 }

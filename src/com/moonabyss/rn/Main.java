@@ -69,6 +69,15 @@ public class Main {
                     myParams.nightEnd = 8;
                 }
             }
+
+            // debug log
+            if (params[0].equalsIgnoreCase("debug")){
+                if (params[1].contains("yes") || params[1].contains("true")){
+                    myParams.debug = true;
+                } else {
+                    myParams.debug = false;
+                }
+            }
         }
 
         Runnable r = () -> {MyApp app = new MyApp(); app.setParams(myParams); app.doJob();};
@@ -81,8 +90,9 @@ class MyParams {
     boolean solo = false;
     boolean video = true;
     boolean safeNight = false;
+    boolean debug = false;
     int size = 5;
-    int videoDuration = 80;
+    int videoDuration = 50;
     int nightStart = 2;
     int nightEnd = 8;
 }

@@ -33,6 +33,7 @@ public class MyApp {
 
     private final static Color RN_GREEN = new Color(37, 136, 69);
     private final static Color RN_BLACK = Color.BLACK;
+    private final static Color RN_WHITE = Color.WHITE;
     private static  final Point[] aPointBonus = {new Point(1050, 766), new Point(1403, 683), new Point(1582, 539)};
     private static  final Point[] aPointRedBonus = {new Point(1100, 760), new Point(1450, 675), new Point(1655, 535)};
     private static  final Point[] aPointAdv = {new Point(1260, 765), new Point(1610, 679), new Point(1800, 536)};
@@ -242,7 +243,7 @@ if (true) {
         }
     }
 
-    private void moveMouseAndClick(Point point) throws InterruptedException, FlashCrashException {
+    private void moveMouse(Point point, Boolean click) throws InterruptedException, FlashCrashException {
         int x = MouseInfo.getPointerInfo().getLocation().x;
         int y = MouseInfo.getPointerInfo().getLocation().y;
 
@@ -252,15 +253,17 @@ if (true) {
         }
         robot.mouseMove(point.x, point.y);
         Thread.sleep(300);
-        robot.mousePress(InputEvent.BUTTON1_MASK);
-        robot.mouseRelease(InputEvent.BUTTON1_MASK);
+        if (click) {
+            robot.mousePress(InputEvent.BUTTON1_MASK);
+            robot.mouseRelease(InputEvent.BUTTON1_MASK);
+        }
         flashCrash();
     }
 
     private void assaMove(Point[] mouseCoord) throws InterruptedException, FlashCrashException {
         Point[] aPoint = mouseCoord;
         for (int i = 0; i < aPoint.length; i++) {
-            moveMouseAndClick(aPoint[i]);
+            moveMouse(aPoint[i], true);
             Thread.sleep(2000);
         }
         robot.mouseMove(960, 500);
@@ -275,7 +278,7 @@ if (true) {
                 return;
             }
             if (bonuses.contains(String.valueOf(i + 1))) {
-                moveMouseAndClick(aPointBonus[i]);
+                moveMouse(aPointBonus[i], true);
                 collectedBonuses++;
                 Thread.sleep(1500);
                 checkModalWindow();
@@ -300,7 +303,7 @@ if (true) {
                 }
             }
 
-            moveMouseAndClick(nextPlayer);
+            moveMouse(nextPlayer, true);
             Thread.sleep(5000);
         }
         assaMove(aPointAssaOut);
@@ -321,7 +324,7 @@ if (true) {
             }
 
             if (videos.contains(String.valueOf(i + 1))) {
-                moveMouseAndClick(aPointAdv[i]);
+                moveMouse(aPointAdv[i], true);
                 //ожидане появления окна ролика
                 Thread.sleep(3000);
                 long startVideo = System.currentTimeMillis();
@@ -329,6 +332,7 @@ if (true) {
                     if (debug) {
                         addMessageAndDisplay("жду окончания ролика");
                     }
+                    isYoutubeVideo();
                     startVideo = isVideoPlaying(startVideo);
                 } while (findColorPoint(robot.createScreenCapture(new Rectangle(1272, 334, 3, 3)), new Color(255, 255, 255)));
                 //ожидание окна после ролика
@@ -342,7 +346,7 @@ if (true) {
                         if (debug) {
                             addMessageAndDisplay("закрываю окно с бонусом");
                         }
-                        moveMouseAndClick(advCrestik);
+                        moveMouse(advCrestik, true);
                         robot.mouseMove(MouseInfo.getPointerInfo().getLocation().x + 50, MouseInfo.getPointerInfo().getLocation().y);
                         Thread.sleep(2000);
                     } while (findColorPoint(robot.createScreenCapture(new Rectangle(1179, 370, 3, 3)), new Color(255, 255, 255)));
@@ -350,7 +354,7 @@ if (true) {
                     if (debug) {
                         addMessageAndDisplay("окно со вторым бонусом");
                     }
-                    moveMouseAndClick(advBonus);
+                    moveMouse(advBonus, true);
                     addMessageAndDisplay("Просмотр ролика #" + ++countOfVideoBonuses);
                     //ожидане появления окна ролика
                     Thread.sleep(5000);
@@ -359,6 +363,7 @@ if (true) {
                         if (debug) {
                             addMessageAndDisplay("жду окончания второго ролика");
                         }
+                        isYoutubeVideo();
                         startVideo = isVideoPlaying(startVideo);
                     } while (findColorPoint(robot.createScreenCapture(new Rectangle(1272, 334, 3, 3)), new Color(255, 255, 255)));
                     //ожидане появления окна бонуса
@@ -367,7 +372,7 @@ if (true) {
                         if (debug) {
                             addMessageAndDisplay("закрываю окно с бонусом");
                         }
-                        moveMouseAndClick(advCrestik);
+                        moveMouse(advCrestik, true);
                         robot.mouseMove(MouseInfo.getPointerInfo().getLocation().x + 50, MouseInfo.getPointerInfo().getLocation().y);
                         Thread.sleep(2000);
                     } while (findColorPoint(robot.createScreenCapture(new Rectangle(1179, 370, 3, 3)), new Color(255, 255, 255)));
@@ -380,9 +385,9 @@ if (true) {
     private long isVideoPlaying(long startVideo) throws InterruptedException, FlashCrashException {
         Thread.sleep(3000);
         if ((System.currentTimeMillis() - startVideo) > videoDuration*1000) {
-            moveMouseAndClick(new Point(1274, 336));
+            moveMouse(new Point(1274, 336), true);
             Thread.sleep(3000);
-            moveMouseAndClick(new Point(1004, 638)); //проиграть ролик заново
+            moveMouse(new Point(1004, 638), true); //проиграть ролик заново
             if (debug) {
                 addMessageAndDisplay("повтор ролика");
             }
@@ -395,7 +400,7 @@ if (true) {
     private void checkModalWindow() throws InterruptedException, FlashCrashException{
         Point closeModalWindow = new Point(1155, 385);
         if (imagesAreEqual(robot.createScreenCapture(new Rectangle(1142, 371, 32, 32)), crest)) {
-            moveMouseAndClick(closeModalWindow);
+            moveMouse(closeModalWindow, true);
             collectedBonuses--;
             Thread.sleep(3000);
         }
@@ -412,9 +417,9 @@ if (true) {
                 //&& robot.getPixelColor(1500, 20).getRGB() == new Color(252, 235, 162).getRGB()) {
                 && robot.getPixelColor(1500, 20).getRGB() == new Color(255, 236, 179).getRGB()) {
             addMessageAndDisplay("Рестарт");
-            moveMouseAndClick(restartFlash);
+            moveMouse(restartFlash, true);
             Thread.sleep(40000);
-            moveMouseAndClick(openStation);
+            moveMouse(openStation, true);
             Thread.sleep(10000);
             robot.mouseMove(1070, 425);
             robot.mousePress(InputEvent.BUTTON1_MASK);
@@ -453,25 +458,17 @@ if (true) {
         Point[] fullScreen = {new Point(1902, 43), new Point(1891, 230)};
         Point openStation = new Point(840, 1040);
         if (imagesAreEqual(robot.createScreenCapture(new Rectangle(1142, 371, 32, 32)), crest)) {
-            /*
-            moveMouseAndClick(closeModalWindow);
-            Thread.sleep(3000);
-            if (inAssa()) {
-                assaMove(aPointAssaOut);
-                Thread.sleep(2000);
-            }
-            */
             addMessageAndDisplay("Рестарт");
             robot.keyPress(KeyEvent.VK_F11);
             Thread.sleep(200);
             robot.keyRelease(KeyEvent.VK_F11);
             Thread.sleep(2000);
-            moveMouseAndClick(restartWindow);
+            moveMouse(restartWindow, true);
             Thread.sleep(40000);
-            moveMouseAndClick(fullScreen[0]);
-            moveMouseAndClick(fullScreen[1]);
+            moveMouse(fullScreen[0], true);
+            moveMouse(fullScreen[1], true);
             Thread.sleep(2000);
-            moveMouseAndClick(openStation);
+            moveMouse(openStation, true);
             Thread.sleep(5000);
             robot.mouseMove(1070, 425);
             robot.mousePress(InputEvent.BUTTON1_MASK);
@@ -501,6 +498,29 @@ if (true) {
         Date date = new Date();
         int hours = Integer.parseInt(dateFormat.format(date));
         return hours >= nightStart && hours < nightEnd;
+    }
+
+    private void isYoutubeVideo() throws FlashCrashException, InterruptedException{
+        /*
+        final Point advPlayer = new Point(1200, 600);
+        final Point advPlayButton1 = new Point(960, 570);
+        final Point advPlayButton2 = new Point(950, 550);
+        final Point advPlayButton3 = new Point(950, 590);
+        final int white = RN_WHITE.getRGB();
+
+        moveMouse(advPlayer, false);
+        Thread.sleep(5000);
+
+        if ( robot.getPixelColor(advPlayButton1.x, advPlayButton1.y).getRGB() == white && robot.getPixelColor(advPlayButton2.x, advPlayButton2.y).getRGB() == white &&
+                robot.getPixelColor(advPlayButton3.x, advPlayButton3.y).getRGB() == white) {
+            addMessageAndDisplay("youtube");
+            moveMouse(advPlayButton1, true);
+            Thread.sleep(1000);
+            moveMouse(advPlayer, false);
+            Thread.sleep(5000);
+        }
+        */
+        return;
     }
 
 }

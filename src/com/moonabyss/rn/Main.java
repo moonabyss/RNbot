@@ -92,7 +92,7 @@ class MyParams {
     boolean safeNight = false;
     boolean debug = false;
     int size = 5;
-    int videoDuration = 50;
+    int videoDuration = 60;
     int nightStart = 2;
     int nightEnd = 8;
 }

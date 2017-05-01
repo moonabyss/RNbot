@@ -25,7 +25,7 @@ public class MySwingForm extends JFrame implements MyDisplay {
 
     public MySwingForm() {
         super("RN bot");
-        setBounds(355, 10, 400, 200);
+        setBounds(700, 10, 400, 200);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setAlwaysOnTop(true);
         //add(image);

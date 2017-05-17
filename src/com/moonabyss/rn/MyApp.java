@@ -201,9 +201,7 @@ if (true) {
                 if (imageRgb - colorRgb == 0 || Math.abs(imageRgb - colorRgb) == 0x00010101) {
                     return true;
                 }
-                /*if (image.getRGB(x, y) == colorRgb) {
-                    return true;
-                }*/
+
             }
         }
         return false;
@@ -332,7 +330,7 @@ if (true) {
                     if (debug) {
                         addMessageAndDisplay("жду окончания ролика");
                     }
-                    isYoutubeVideo();
+                    startVideo = isYoutubeVideo(startVideo);
                     startVideo = isVideoPlaying(startVideo);
                 } while (findColorPoint(robot.createScreenCapture(new Rectangle(1272, 334, 3, 3)), new Color(255, 255, 255)));
                 //ожидание окна после ролика
@@ -363,7 +361,7 @@ if (true) {
                         if (debug) {
                             addMessageAndDisplay("жду окончания второго ролика");
                         }
-                        isYoutubeVideo();
+                        startVideo = isYoutubeVideo(startVideo);
                         startVideo = isVideoPlaying(startVideo);
                     } while (findColorPoint(robot.createScreenCapture(new Rectangle(1272, 334, 3, 3)), new Color(255, 255, 255)));
                     //ожидане появления окна бонуса
@@ -419,6 +417,7 @@ if (true) {
             addMessageAndDisplay("Рестарт");
             moveMouse(restartFlash, true);
             Thread.sleep(40000);
+            checkNewAgeWindow();
             moveMouse(openStation, true);
             Thread.sleep(10000);
             robot.mouseMove(1070, 425);
@@ -429,14 +428,14 @@ if (true) {
         }
     }
 
-    private void antiSleep() throws InterruptedException {
+    private void antiSleep() throws InterruptedException, FlashCrashException {
         int x = MouseInfo.getPointerInfo().getLocation().x;
         int y = MouseInfo.getPointerInfo().getLocation().y;
         Thread.sleep(5000);
         if (x == MouseInfo.getPointerInfo().getLocation().x && y == MouseInfo.getPointerInfo().getLocation().y) {
-            robot.mouseMove(x + 50, y);
+            moveMouse(new Point(x + 50, y), false);
             Thread.sleep(500);
-            robot.mouseMove(x, y);
+            moveMouse(new Point(x, y), false);
         }
     }
 
@@ -500,27 +499,64 @@ if (true) {
         return hours >= nightStart && hours < nightEnd;
     }
 
-    private void isYoutubeVideo() throws FlashCrashException, InterruptedException{
-        /*
+    private long isYoutubeVideo(long startVideo) throws FlashCrashException, InterruptedException{
         final Point advPlayer = new Point(1200, 600);
-        final Point advPlayButton1 = new Point(960, 570);
-        final Point advPlayButton2 = new Point(950, 550);
-        final Point advPlayButton3 = new Point(950, 590);
-        final int white = RN_WHITE.getRGB();
+        final Point advPlayButton1 = new Point(970, 560);
+        final Point advPlayButton2 = new Point(950, 540);
+        final Point advPlayButton3 = new Point(955, 575);
+        final Point advPlayButton4 = new Point(960, 558);
+        final Point advPlayButton5 = new Point(940, 550);
+        final Point advPlayButton6 = new Point(980, 575);
+        Point advClickPlay = null;
+        final Color white = new Color(255, 255, 255);
+        final Color youtubeRed = new Color(204, 24, 30);
 
         moveMouse(advPlayer, false);
-        Thread.sleep(5000);
+        antiSleep();
+        Thread.sleep(1000);
 
-        if ( robot.getPixelColor(advPlayButton1.x, advPlayButton1.y).getRGB() == white && robot.getPixelColor(advPlayButton2.x, advPlayButton2.y).getRGB() == white &&
-                robot.getPixelColor(advPlayButton3.x, advPlayButton3.y).getRGB() == white) {
+        int youtubeCount = 0;
+        for (int i = 0; i < 10; i++) {
+            if ( findColorPoint(robot.createScreenCapture(new Rectangle(advPlayButton1.x, advPlayButton1.y, 3, 3)), white) &&
+                    findColorPoint(robot.createScreenCapture(new Rectangle(advPlayButton2.x, advPlayButton2.y, 3, 3)), white) &&
+                    findColorPoint(robot.createScreenCapture(new Rectangle(advPlayButton3.x, advPlayButton3.y, 3, 3)), white) ) {
+                advClickPlay = advPlayButton1;
+                youtubeCount++;
+                Thread.sleep(1000);
+            } else if ( findColorPoint(robot.createScreenCapture(new Rectangle(advPlayButton4.x, advPlayButton4.y, 3, 3)), white) &&
+                    findColorPoint(robot.createScreenCapture(new Rectangle(advPlayButton5.x, advPlayButton5.y, 3, 3)), youtubeRed) &&
+                    findColorPoint(robot.createScreenCapture(new Rectangle(advPlayButton6.x, advPlayButton6.y, 3, 3)), youtubeRed) ) {
+                advClickPlay = advPlayButton4;
+                youtubeCount++;
+                Thread.sleep(1000);
+            } else {
+                return startVideo;
+            }
+        }
+
+        if (youtubeCount == 10) {
             addMessageAndDisplay("youtube");
-            moveMouse(advPlayButton1, true);
+            moveMouse(advClickPlay, true);
             Thread.sleep(1000);
             moveMouse(advPlayer, false);
-            Thread.sleep(5000);
+            Thread.sleep(3000);
         }
-        */
-        return;
+
+        return System.currentTimeMillis();
+    }
+
+    private void checkNewAgeWindow() throws InterruptedException, FlashCrashException{
+        final Point newAge = new Point(1384, 296);
+        if (findColorPoint(robot.createScreenCapture(new Rectangle(newAge.x, newAge.y, 3, 3)), new Color(255, 255, 255))) {
+            do {
+                if (debug) {
+                    addMessageAndDisplay("закрываю окно с новой эпохой");
+                }
+                moveMouse(newAge, true);
+                robot.mouseMove(MouseInfo.getPointerInfo().getLocation().x + 50, MouseInfo.getPointerInfo().getLocation().y);
+                Thread.sleep(2000);
+            } while (findColorPoint(robot.createScreenCapture(new Rectangle(newAge.x, newAge.y, 3, 3)), new Color(255, 255, 255)));
+        }
     }
 
 }

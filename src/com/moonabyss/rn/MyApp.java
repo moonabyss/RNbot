@@ -324,7 +324,7 @@ if (true) {
             if (videos.contains(String.valueOf(i + 1))) {
                 moveMouse(aPointAdv[i], true);
                 //ожидане появления окна ролика
-                Thread.sleep(3000);
+                Thread.sleep(10000);
                 long startVideo = System.currentTimeMillis();
                 do {
                     if (debug) {
@@ -355,7 +355,7 @@ if (true) {
                     moveMouse(advBonus, true);
                     addMessageAndDisplay("Просмотр ролика #" + ++countOfVideoBonuses);
                     //ожидане появления окна ролика
-                    Thread.sleep(5000);
+                    Thread.sleep(10000);
                     startVideo = System.currentTimeMillis();
                     do {
                         if (debug) {

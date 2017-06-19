@@ -109,7 +109,7 @@ public class MyApp {
                     //messages.add("Бонус: " + checkBonus() + "\tВидео: " + checkAdv());
                 } else {
                     messages.add("Станция закрыта");
-                    checkErrorBuilding();
+                    //checkErrorBuilding();
                 }
                 display.showMessages(messages);
                 Thread.sleep(1000);
@@ -345,7 +345,7 @@ if (true) {
                             addMessageAndDisplay("закрываю окно с бонусом");
                         }
                         moveMouse(advCrestik, true);
-                        robot.mouseMove(MouseInfo.getPointerInfo().getLocation().x + 50, MouseInfo.getPointerInfo().getLocation().y);
+                        robot.mouseMove(MouseInfo.getPointerInfo().getLocation().x, MouseInfo.getPointerInfo().getLocation().y-50);
                         Thread.sleep(2000);
                     } while (findColorPoint(robot.createScreenCapture(new Rectangle(1179, 370, 3, 3)), new Color(255, 255, 255)));
                 } else {
@@ -371,7 +371,7 @@ if (true) {
                             addMessageAndDisplay("закрываю окно с бонусом");
                         }
                         moveMouse(advCrestik, true);
-                        robot.mouseMove(MouseInfo.getPointerInfo().getLocation().x + 50, MouseInfo.getPointerInfo().getLocation().y);
+                        robot.mouseMove(MouseInfo.getPointerInfo().getLocation().x, MouseInfo.getPointerInfo().getLocation().y-50);
                         Thread.sleep(2000);
                     } while (findColorPoint(robot.createScreenCapture(new Rectangle(1179, 370, 3, 3)), new Color(255, 255, 255)));
                 }
@@ -418,6 +418,7 @@ if (true) {
             moveMouse(restartFlash, true);
             Thread.sleep(40000);
             checkNewAgeWindow();
+            checkOffer();
             moveMouse(openStation, true);
             Thread.sleep(10000);
             robot.mouseMove(1070, 425);
@@ -556,6 +557,20 @@ if (true) {
                 robot.mouseMove(MouseInfo.getPointerInfo().getLocation().x + 50, MouseInfo.getPointerInfo().getLocation().y);
                 Thread.sleep(2000);
             } while (findColorPoint(robot.createScreenCapture(new Rectangle(newAge.x, newAge.y, 3, 3)), new Color(255, 255, 255)));
+        }
+    }
+
+    private void checkOffer() throws InterruptedException, FlashCrashException{
+        final Point offer = new Point(1420, 315);
+        if (findColorPoint(robot.createScreenCapture(new Rectangle(offer.x, offer.y, 3, 3)), new Color(255, 255, 255))) {
+            do {
+                if (debug) {
+                    addMessageAndDisplay("закрываю окно с предложением");
+                }
+                moveMouse(offer, true);
+                robot.mouseMove(MouseInfo.getPointerInfo().getLocation().x + 50, MouseInfo.getPointerInfo().getLocation().y);
+                Thread.sleep(2000);
+            } while (findColorPoint(robot.createScreenCapture(new Rectangle(offer.x, offer.y, 3, 3)), new Color(255, 255, 255)));
         }
     }
 

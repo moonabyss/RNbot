@@ -109,7 +109,7 @@ public class MyApp {
                     //messages.add("Бонус: " + checkBonus() + "\tВидео: " + checkAdv());
                 } else {
                     messages.add("Станция закрыта");
-                    //checkErrorBuilding();
+                    checkErrorBuilding();
                 }
                 display.showMessages(messages);
                 Thread.sleep(1000);

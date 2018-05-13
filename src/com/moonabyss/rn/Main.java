@@ -78,6 +78,15 @@ public class Main {
                     myParams.debug = false;
                 }
             }
+
+            // don't collect bonuses online players
+            if (params[0].equalsIgnoreCase("skipOnline")){
+                if (params[1].contains("yes") || params[1].contains("true")){
+                    myParams.skipOnline = true;
+                } else {
+                    myParams.skipOnline = false;
+                }
+            }
         }
 
         Runnable r = () -> {MyApp app = new MyApp(); app.setParams(myParams); app.doJob();};
@@ -91,6 +100,7 @@ class MyParams {
     boolean video = true;
     boolean safeNight = false;
     boolean debug = false;
+    boolean skipOnline = true;
     int size = 5;
     int videoDuration = 60;
     int nightStart = 2;

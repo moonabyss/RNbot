@@ -25,6 +25,7 @@ public class MyApp {
     boolean video;
     boolean safeNight;
     boolean debug;
+    boolean skipOnline;
     int assaSize;
     int videoDuration;
     int nightStart;
@@ -85,6 +86,7 @@ public class MyApp {
         messages.add("nightStart " + nightStart);
         messages.add("nightEnd " + nightEnd);
         messages.add("debug " + debug);
+        messages.add("skipOnline " + skipOnline);
         try {
             robot = new Robot();
         } catch (AWTException e) {
@@ -291,12 +293,15 @@ if (true) {
             if (!inAssa()) {
                 return;
             }
-            if ((safeNight == false) || (safeNight == true && !isNight())) {
+
+            if (    ((safeNight == false) || (safeNight == true && !isNight()))
+                    && ((skipOnline == false) || (skipOnline == true && !isPlayerOnline())) ) {
                 getBonus();
             }
             if (collectedBonuses < 1) {
                 viewVideo();
-                if ((safeNight == false) || (safeNight == true && !isNight())) {
+                if (    ((safeNight == false) || (safeNight == true && !isNight()))
+                        && ((skipOnline == false) || (skipOnline == true && !isPlayerOnline())) ) {
                     getBonus();
                 }
             }
@@ -407,13 +412,13 @@ if (true) {
     private void flashCrash() throws InterruptedException, FlashCrashException{
         int black = RN_BLACK.getRGB();
         //Point restartFlash = new Point(310, 18);
-        Point restartFlash = new Point(250, 20);
+        Point restartFlash = new Point(320, 25);
         Point openStation = new Point(840, 1040);
         if (robot.getPixelColor(400, 250).getRGB() == black
                 && robot.getPixelColor(1500, 250).getRGB() == black
                 && robot.getPixelColor(400, 850).getRGB() == black
                 //&& robot.getPixelColor(1500, 20).getRGB() == new Color(252, 235, 162).getRGB()) {
-                && robot.getPixelColor(1500, 20).getRGB() == new Color(255, 236, 179).getRGB()) {
+                && robot.getPixelColor(1800, 20).getRGB() == new Color(255, 255, 255).getRGB()) {
             addMessageAndDisplay("Рестарт");
             moveMouse(restartFlash, true);
             Thread.sleep(40000);
@@ -427,6 +432,13 @@ if (true) {
             robot.mouseRelease(InputEvent.BUTTON1_MASK);
             throw new FlashCrashException();
         }
+    }
+
+    private boolean isPlayerOnline() {
+        if (robot.getPixelColor(60, 147).getRGB() == new Color(145, 207, 102).getRGB()) {
+            return true;
+        }
+        return false;
     }
 
     private void antiSleep() throws InterruptedException, FlashCrashException {
@@ -491,6 +503,7 @@ if (true) {
         nightStart = params.nightStart;
         nightEnd = params.nightEnd;
         debug = params.debug;
+        skipOnline = params.skipOnline;
     }
 
     private boolean isNight() {

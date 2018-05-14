@@ -418,7 +418,7 @@ if (true) {
                 && robot.getPixelColor(1500, 250).getRGB() == black
                 && robot.getPixelColor(400, 850).getRGB() == black
                 //&& robot.getPixelColor(1500, 20).getRGB() == new Color(252, 235, 162).getRGB()) {
-                && robot.getPixelColor(1800, 20).getRGB() == new Color(255, 255, 255).getRGB()) {
+                && robot.getPixelColor(1800, 5).getRGB() == new Color(255, 255, 255).getRGB()) {
             addMessageAndDisplay("Рестарт");
             moveMouse(restartFlash, true);
             Thread.sleep(40000);
